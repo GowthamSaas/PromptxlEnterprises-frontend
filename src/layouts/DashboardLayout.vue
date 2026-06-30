@@ -35,7 +35,7 @@
         </template>
       </nav>
       
-      <div class="user-block">
+      <div class="user-block"  @click="goToProfile">
         <div class="user-avatar">
           <i class="pi pi-user"></i>
         </div>
@@ -48,7 +48,7 @@
           text 
           rounded 
           class="logout-btn" 
-          @click="logout" 
+          @click.stop="logout" 
           v-tooltip.top="'Sign Out'"
         />
       </div>
@@ -67,6 +67,10 @@ import Button from 'primevue/button'
 
 const router = useRouter()
 const authStore = useAuthStore()
+
+function goToProfile() {
+  router.push('/profile')
+}
 
 function logout() {
   authStore.logout()
