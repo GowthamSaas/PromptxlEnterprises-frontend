@@ -40,7 +40,10 @@ export const authAPI = {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
   },
-  me: () => api.get('/auth/me')
+  me: () => api.get('/auth/me'),
+
+  changePassword: (data) =>
+      api.put("/auth/change-password", data)
 }
 
 // Users API
