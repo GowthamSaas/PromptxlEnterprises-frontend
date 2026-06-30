@@ -9,15 +9,51 @@
     </div>
 
     <div class="management-panel">
-      <DataTable :value="users" :loading="loading" stripedRows>
-      <Column field="full_name" header="Name" />
-      <Column field="email" header="Email" />
-      <Column field="role" header="Role">
+
+<div class="sa-table-toolbar">
+
+    <IconField iconPosition="left" class="sa-search-field">
+        <InputIcon class="pi pi-search" />
+
+        <InputText
+            v-model="searchQuery"
+            placeholder="Search Users..."
+            class="sa-search-input"
+        />
+
+    </IconField>
+
+    <Button
+        icon="pi pi-refresh"
+        severity="secondary"
+        text
+        rounded
+        :loading="loading"
+        @click="loadUsers"
+    />
+
+</div>
+
+      <DataTable 
+      :value="filteredUsers" 
+      :loading="loading"
+      stripedRows
+      rowHover 
+      responsiveLayout="scroll"
+      removableSort
+      sortMode="multiple"
+      :paginator="filteredUsers.length > 10"
+      :rows="10"
+      paginator-template="PrevPageLink PageLinks NextPageLink"
+      >
+      <Column field="full_name" header="Name" sortable />
+      <Column field="email" header="Email" sortable />
+      <Column field="role" header="Role" sortable>
         <template #body="{ data }">
           <Tag :value="data.role" :severity="getRoleSeverity(data.role)" />
         </template>
       </Column>
-      <Column field="is_active" header="Status">
+      <Column field="is_active" header="Status" sortable>
         <template #body="{ data }">
           <Tag :value="data.is_active ? 'Active' : 'Inactive'" :severity="data.is_active ? 'success' : 'danger'" />
         </template>
@@ -185,15 +221,16 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import InputSwitch from 'primevue/inputswitch'
 import Tag from 'primevue/tag'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
 const toast = useToast()
 const confirm = useConfirm()
 const usersStore = useUsersStore()
 
 const loading = computed(() => usersStore.loading)
-const users = computed(() => usersStore.users.filter(u => u.role === 'user'))
 
-
+const searchQuery = ref('')
 const viewDialogVisible = ref(false)
 const selectedUser = ref(null)
 const dialogVisible = ref(false)
@@ -207,10 +244,34 @@ const form = ref({
   is_active: true
 })
 
+const filteredUsers = computed(() => {
+    const q = searchQuery.value.trim().toLowerCase()
+
+    return usersStore.users
+        .filter(user => user.role === 'user')
+        .filter(user => {
+            if (!q) return true
+
+            return [
+                user.full_name,
+                user.email,
+                user.role,
+                user.is_active ? 'active' : 'inactive'
+            ]
+            .some(value =>
+                value?.toString().toLowerCase().includes(q)
+            )
+        })
+})
+
 
 function viewUser(user) {
   selectedUser.value = user
   viewDialogVisible.value = true
+}
+
+async function loadUsers() {
+    await usersStore.fetchUsers()
 }
 
 
@@ -265,9 +326,7 @@ function confirmDelete(user) {
   })
 }
 
-onMounted(() => {
-  usersStore.fetchUsers()
-})
+onMounted(loadUsers)
 </script>
 
 

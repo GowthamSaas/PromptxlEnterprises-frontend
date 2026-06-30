@@ -9,10 +9,46 @@
     </div>
 
     <div class="management-panel">
-      <DataTable :value="admins" :loading="loading" stripedRows>
-        <Column field="full_name" header="Name" />
-        <Column field="email" header="Email" />
-        <Column field="is_active" header="Status">
+
+<div class="sa-table-toolbar">
+
+    <IconField iconPosition="left" class="sa-search-field">
+        <InputIcon class="pi pi-search" />
+
+        <InputText
+            v-model="searchQuery"
+            placeholder="Search admins..."
+            class="sa-search-input"
+        />
+
+    </IconField>
+
+    <Button
+        icon="pi pi-refresh"
+        severity="secondary"
+        text
+        rounded
+        :loading="loading"
+        @click="loadAdmins"
+    />
+
+</div>
+
+      <DataTable 
+      :value="filteredAdmins" 
+      :loading="loading"
+      stripedRows
+      rowHover 
+      responsiveLayout="scroll"
+      removableSort
+      sortMode="multiple"
+      :paginator="filteredAdmins.length > 10"
+      :rows="10"
+      paginator-template="PrevPageLink PageLinks NextPageLink"
+      >
+        <Column field="full_name" header="Name" sortable />
+        <Column field="email" header="Email" sortable />
+        <Column field="is_active" header="Status" sortable >
           <template #body="{ data }">
             <Tag :value="data.is_active ? 'Active' : 'Inactive'" :severity="data.is_active ? 'success' : 'danger'" />
           </template>
@@ -155,18 +191,19 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import InputSwitch from 'primevue/inputswitch'
 import Tag from 'primevue/tag'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
 const toast = useToast()
 const confirm = useConfirm()
 const usersStore = useUsersStore()
 
 const loading = computed(() => usersStore.loading)
-const admins = computed(() => usersStore.users.filter(u => u.role === 'admin'))
 
 
 const viewDialogVisible = ref(false)  //view updates
 const selectedAdmin = ref(null)
-
+const searchQuery = ref('')
 const dialogVisible = ref(false)
 const editingAdmin = ref(null)
 const saving = ref(false)
@@ -176,6 +213,26 @@ const form = ref({
   password: '',
   role: 'admin',
   is_active: true
+})
+
+const filteredAdmins = computed(() => {
+    const q = searchQuery.value.trim().toLowerCase()
+
+    return usersStore.users
+        .filter(user => user.role === 'admin')
+        .filter(user => {
+            if (!q) return true
+
+            return [
+                user.full_name,
+                user.email,
+                user.role,
+                user.is_active ? 'active' : 'inactive'
+            ]
+            .some(value =>
+                value?.toString().toLowerCase().includes(q)
+            )
+        })
 })
 
 function viewAdmin(admin) {
@@ -229,9 +286,11 @@ function confirmDelete(admin) {
   })
 }
 
-onMounted(() => {
-  usersStore.fetchUsers()
-})
+async function loadAdmins() {
+    await usersStore.fetchUsers()
+}
+
+onMounted(loadAdmins)
 </script>
 
 <style scoped>
