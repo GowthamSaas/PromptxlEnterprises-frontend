@@ -53,6 +53,11 @@
             <p>Select a user to manage their applications</p>
           </div>
           <div v-else>
+            <InputText
+              v-model="searchQuery"
+              placeholder="Search applications by name or description"
+              style="width:100%; max-width:360px; margin-bottom:8px;"
+            />
             <div class="apps-checklist">
               <div v-for="app in applications" :key="app.id" class="app-checkbox">
                 <Checkbox 
@@ -87,13 +92,22 @@ import Card from 'primevue/card'
 import Listbox from 'primevue/listbox'
 import Checkbox from 'primevue/checkbox'
 import Tag from 'primevue/tag'
+import InputText from 'primevue/inputtext'
 
 const toast = useToast()
 const usersStore = useUsersStore()
 const applicationsStore = useApplicationsStore()
 
+const searchQuery = ref('')
 const users = computed(() => usersStore.users.filter(u => u.role === 'user'))
-const applications = computed(() => applicationsStore.applications)
+const applications = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase()
+  if (!query) return applicationsStore.applications
+  return applicationsStore.applications.filter(app =>
+    app.name?.toLowerCase().includes(query) ||
+    app.description?.toLowerCase().includes(query)
+  )
+})
 
 const selectedUser = ref(null)
 const assignedAppIds = ref([])
@@ -159,6 +173,21 @@ onMounted(() => {
   display: grid;
   grid-template-columns: minmax(320px, 400px) 1fr;
   gap: 24px;
+  align-items: stretch;
+  min-height: 650px;
+}
+
+.user-select-card,
+.apps-assign-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+:deep(.p-card-content) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .user-listbox { 
@@ -166,7 +195,11 @@ onMounted(() => {
   background: transparent !important;
 }
 
-:deep(.p-listbox-list-wrapper) {
+.user-select-card :deep(.p-listbox-list-wrapper) {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 520px;
+  overflow-y: auto;
   padding: 0;
 }
 
@@ -174,6 +207,17 @@ onMounted(() => {
   border-radius: 12px;
   margin-bottom: 4px;
   padding: 12px 16px !important;
+}
+
+.apps-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 520px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .card-title-row { 
