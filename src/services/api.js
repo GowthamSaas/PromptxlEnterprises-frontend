@@ -64,7 +64,9 @@ export const applicationsAPI = {
 // Tenants API
 export const tenantsAPI = {
   getAll: () => api.get('/tenants'),
-  create: (data) => api.post('/tenants', data)
+  create: (data) => api.post('/tenants', data),
+  update: (id, data) => api.put(`/tenants/${id}`, data),
+  delete: (id) => api.delete(`/tenants/${id}`)
 }
 
 // Assignments API
