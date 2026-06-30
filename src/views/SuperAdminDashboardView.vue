@@ -15,7 +15,7 @@
 
     <!-- Stats Row -->
     <div class="sa-stats-row">
-      <div class="sa-stat-card">
+      <div class="sa-stat-card sa-stat-card--clickable" @click="viewTenants">
         <div class="sa-stat-icon sa-stat-icon--blue">
           <i class="pi pi-building"></i>
         </div>
@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <div class="sa-stat-card">
+      <div class="sa-stat-card sa-stat-card--clickable" @click="viewOwners">
         <div class="sa-stat-icon sa-stat-icon--violet">
           <i class="pi pi-users"></i>
         </div>
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <div class="sa-stat-card">
+      <div class="sa-stat-card sa-stat-card--clickable" @click="viewActiveAccounts">
         <div class="sa-stat-icon sa-stat-icon--emerald">
           <i class="pi pi-check-circle"></i>
         </div>
@@ -150,11 +150,56 @@ function viewTenants() {
   router.push('/superadmin/tenants')
 }
 
+function viewOwners() {
+  router.push('/superadmin/tenants')
+}
+
+function viewActiveAccounts() {
+  router.push('/users')
+}
+
 onMounted(init)
 </script>
 
 <style scoped>
-/* Dashboard-specific overrides are now in main.css */
-.sa-page { max-width: 1100px; }
+.sa-page {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .sa-page {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .sa-hero,
+  .sa-panel,
+  .sa-action-card,
+  .sa-stat-card {
+    width: 100%;
+  }
+}
+
+.sa-stat-card--clickable {
+  cursor: pointer;
+}
+
+.sa-stat-card--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(15,23,42,.1);
+}
+
+@media (max-width: 640px) {
+  .sa-hero {
+    padding: 24px 18px;
+  }
+
+  .sa-action-top {
+    flex-direction: column;
+    gap: 14px;
+  }
+}
 </style>
 
