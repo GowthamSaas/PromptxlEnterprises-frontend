@@ -69,7 +69,6 @@
         <Password id="password" v-model="form.password" class="w-full" :feedback="false" toggleMask placeholder="••••••••" />
       </div>
 
-
      <div class="field field-row-inline">
   <label for="active">Account Active Status</label>
   <div style="display: flex; align-items: center; gap: 0.5rem;">
