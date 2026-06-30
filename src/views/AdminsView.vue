@@ -101,12 +101,42 @@
           <Password id="password" v-model="form.password" class="w-full" :feedback="false" toggleMask
             placeholder="••••••••" />
         </div>
+
+
         <div class="field field-row-inline">
-          <label for="active">Account Active Status</label>
-          <InputSwitch id="active" v-model="form.is_active" />
-        </div>
+  <label for="active">Account Active Status</label>
+  <div style="display: flex; align-items: center; gap: 0.5rem;">
+    <InputSwitch
+      id="active"
+      v-model="form.is_active"
+      :pt="{
+        slider: {
+          style: {
+            backgroundColor: form.is_active ? '#16a34a' : '#d1d5db'
+          }
+        }
+      }"
+    />
+    <span
+      :style="{
+        fontSize: '0.85rem',
+        fontWeight: '600',
+        color: form.is_active ? '#16a34a' : '#9ca3af'
+      }"
+    >
+      {{ form.is_active ? 'Active' : 'Inactive' }}
+    </span>
+  </div>
+</div>
+
+
         <template #footer>
-          <Button label="Cancel" text class="modal-cancel-btn" @click="dialogVisible = false" />
+             <Button
+    label="Cancel"
+    outlined
+    severity="secondary"
+    @click="dialogVisible = false"
+  />
           <Button label="Save Changes" class="modal-save-btn" @click="saveAdmin" :loading="saving" />
         </template>
       </Dialog>

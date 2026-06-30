@@ -6,7 +6,7 @@
         <h1 class="sa-page-title">Tenants</h1>
         <p class="sa-page-sub">All registered company tenants on the PromptXL platform.</p>
       </div>
-      <Button
+      <!-- <Button
         type="button"
         size="large"
         :disabled="loading"
@@ -20,14 +20,14 @@
       <Button size="large">
         <i class="pi pi-check"></i>
         Large
-      </Button>
+      </Button> -->
     </div>
 
     <!-- Tenants Table Card -->
     <div class="sa-panel">
       <!-- Toolbar -->
       <div class="sa-table-toolbar">
-        <InputIcon class="pi pi-search" />
+        <!-- <InputIcon class="pi pi-search" /> -->
         <IconField iconPosition="left" class="sa-search-field">
           <InputText
             v-model="searchQuery"
@@ -120,10 +120,67 @@
 
         <Column header="Status">
           <template #body>
-            <Tag value="Active" severity="success" icon="pi pi-check-circle" />
+            <div class="sa-status-cell">
+              <Tag value="Active" severity="success" icon="pi pi-check-circle" />
+            </div>
+          </template>
+        </Column>
+
+        <Column header="Actions" style="width: 160px">
+          <template #body="{ data }">
+            <div class="sa-action-buttons">
+              <Button icon="pi pi-eye" text class="sa-table-action" @click="viewTenant(data)" />
+              <Button icon="pi pi-pencil" text class="sa-table-action" @click="editTenant(data)" />
+              <Button icon="pi pi-trash" text class="sa-table-action" @click="confirmDeleteTenant(data)" />
+            </div>
           </template>
         </Column>
       </DataTable>
+
+      <Dialog v-model:visible="editDialogVisible" header="Edit Tenant" modal :style="{ width: '520px' }" dismissableMask>
+        <div class="sa-edit-form">
+          <div class="field">
+            <label for="editCompanyName">Company Name</label>
+            <InputText id="editCompanyName" v-model="editForm.company_name" class="w-full" />
+          </div>
+          <div class="field">
+            <label for="editContactEmail">Contact Email</label>
+            <InputText id="editContactEmail" v-model="editForm.contact_email" class="w-full" />
+          </div>
+          <div class="field">
+            <label for="editContactPhone">Contact Phone</label>
+            <InputText id="editContactPhone" v-model="editForm.contact_phone" class="w-full" />
+          </div>
+          <div class="field">
+            <label for="editAddress">Address</label>
+            <InputText id="editAddress" v-model="editForm.address" class="w-full" />
+          </div>
+        </div>
+
+        <template #footer>
+          <Button label="Cancel" severity="secondary" text @click="editDialogVisible = false" />
+          <Button label="Save" @click="saveTenant" />
+        </template>
+      </Dialog>
+
+      <Dialog v-model:visible="viewDialogVisible" header="Tenant Details" modal :style="{ width: '520px' }" dismissableMask>
+        <div class="sa-tenant-detail-grid">
+          <div class="sa-detail-label">Company</div>
+          <div>{{ selectedTenant?.company_name || '—' }}</div>
+          <div class="sa-detail-label">Tenant ID</div>
+          <div>{{ selectedTenant?.tenant_id || '—' }}</div>
+          <div class="sa-detail-label">Contact Email</div>
+          <div>{{ selectedTenant?.contact_email || '—' }}</div>
+          <div class="sa-detail-label">Phone</div>
+          <div>{{ selectedTenant?.contact_phone || '—' }}</div>
+          <div class="sa-detail-label">Address</div>
+          <div>{{ selectedTenant?.address || '—' }}</div>
+        </div>
+
+        <template #footer>
+          <Button label="Close" severity="secondary" text @click="viewDialogVisible = false" />
+        </template>
+      </Dialog>
     </div>
   </div>
 </template>
@@ -132,6 +189,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
+import { useConfirm } from 'primevue/useconfirm'
 import { useAuthStore } from '../stores/auth'
 import { tenantsAPI } from '../services/api'
 import Button from 'primevue/button'
@@ -142,14 +200,26 @@ import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
+import Dialog from 'primevue/dialog'
 
 const router = useRouter()
 const toast = useToast()
+const confirm = useConfirm()
 const authStore = useAuthStore()
 
 const tenants = ref([])
 const loading = ref(true)
 const searchQuery = ref('')
+const viewDialogVisible = ref(false)
+const editDialogVisible = ref(false)
+const selectedTenant = ref(null)
+const editingTenant = ref(null)
+const editForm = ref({
+  company_name: '',
+  contact_email: '',
+  contact_phone: '',
+  address: ''
+})
 
 const filteredTenants = computed(() => {
   const q = searchQuery.value.trim().toLowerCase()
@@ -170,6 +240,56 @@ async function loadTenants() {
   } finally {
     loading.value = false
   }
+}
+
+function viewTenant(tenant) {
+  selectedTenant.value = tenant
+  viewDialogVisible.value = true
+}
+
+function editTenant(tenant) {
+  editingTenant.value = tenant
+  editForm.value = {
+    company_name: tenant.company_name || '',
+    contact_email: tenant.contact_email || '',
+    contact_phone: tenant.contact_phone || '',
+    address: tenant.address || ''
+  }
+  editDialogVisible.value = true
+}
+
+async function saveTenant() {
+  if (!editingTenant.value) return
+  try {
+    await tenantsAPI.update(editingTenant.value.id, {
+      company_name: editForm.value.company_name,
+      contact_email: editForm.value.contact_email,
+      contact_phone: editForm.value.contact_phone,
+      address: editForm.value.address
+    })
+    toast.add({ severity: 'success', summary: 'Updated', detail: 'Tenant updated successfully', life: 3000 })
+    editDialogVisible.value = false
+    await loadTenants()
+  } catch (e) {
+    toast.add({ severity: 'error', summary: 'Error', detail: e.response?.data?.detail || 'Could not update tenant', life: 3000 })
+  }
+}
+
+function confirmDeleteTenant(tenant) {
+  confirm.require({
+    message: `Delete tenant "${tenant.company_name}"?`,
+    header: 'Confirm Delete',
+    icon: 'pi pi-exclamation-triangle',
+    accept: async () => {
+      try {
+        await tenantsAPI.delete(tenant.id)
+        toast.add({ severity: 'success', summary: 'Deleted', detail: 'Tenant deleted successfully', life: 3000 })
+        await loadTenants()
+      } catch (e) {
+        toast.add({ severity: 'error', summary: 'Error', detail: e.response?.data?.detail || 'Could not delete tenant', life: 3000 })
+      }
+    }
+  })
 }
 
 onMounted(loadTenants)
@@ -240,5 +360,46 @@ onMounted(loadTenants)
 }
 .sa-email-link:hover { text-decoration: underline; }
 .sa-phone, .sa-address { color: #374151; }
+
+.sa-status-cell {
+  display: flex;
+  justify-content: center;
+}
+
+.sa-action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.sa-table-action .p-button {
+  height: 32px;
+  width: 32px;
+  min-width: 32px;
+}
+
+.sa-edit-form {
+  display: grid;
+  gap: 16px;
+}
+
+.sa-edit-form .field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.sa-tenant-detail-grid {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 12px 20px;
+  padding: 16px 0;
+}
+
+.sa-detail-label {
+  font-weight: 700;
+  color: #334155;
+}
 </style>
 
