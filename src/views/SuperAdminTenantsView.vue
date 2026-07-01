@@ -118,7 +118,7 @@
           </template>
         </Column>
 
-        <Column header="Status">
+        <Column header="Status" sortable>
           <template #body>
             <div class="sa-status-cell">
               <Tag value="Active" severity="success" icon="pi pi-check-circle" />
