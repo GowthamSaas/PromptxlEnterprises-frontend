@@ -9,20 +9,77 @@
     </div>
 
     <div class="management-panel">
-      <DataTable :value="applications" :loading="loading" stripedRows>
+      <div
+  style="
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  "
+>
+
+  <IconField
+    iconPosition="left"
+    style="
+      flex:1;
+      width:100%;
+    "
+  >
+
+    <InputIcon class="pi pi-search" />
+
+    <InputText
+      v-model="searchQuery"
+      placeholder="Search Applications..."
+      style="width:100%;"
+    />
+
+  </IconField>
+
+  <Button
+    icon="pi pi-refresh"
+    severity="secondary"
+    outlined
+    rounded
+    :loading="loading"
+    @click="loadApplications"
+  />
+
+</div>
+
+<DataTable
+  :value="filteredApplications"
+  :loading="loading"
+  stripedRows
+  rowHover
+  responsiveLayout="scroll"
+  removableSort
+  sortMode="multiple"
+  :paginator="filteredApplications.length > 10"
+  :rows="10"
+  paginatorTemplate="PrevPageLink PageLinks NextPageLink"
+>
       <Column header="Icon" style="width: 80px">
         <template #body="{ data }">
           <img :src="data.icon_url" :alt="data.name" style="width: 40px; height: 40px; object-fit: contain" />
         </template>
       </Column>
-      <Column field="name" header="Name" />
+      <Column
+  field="name"
+  header="Name"
+  sortable
+/>
       <Column field="description" header="Description" />
       <Column field="launch_url" header="URL">
         <template #body="{ data }">
           <a :href="data.launch_url" target="_blank" class="url-link">{{ data.launch_url }}</a>
         </template>
       </Column>
-      <Column field="is_active" header="Status">
+      <Column
+  field="is_active"
+  header="Status"
+  sortable
+>
         <template #body="{ data }">
           <Tag :value="data.is_active ? 'Active' : 'Inactive'" :severity="data.is_active ? 'success' : 'danger'" />
         </template>
@@ -210,6 +267,9 @@ import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import InputSwitch from 'primevue/inputswitch'
 import Tag from 'primevue/tag'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -217,6 +277,7 @@ const applicationsStore = useApplicationsStore()
 
 const loading = computed(() => applicationsStore.loading)
 const applications = computed(() => applicationsStore.applications)
+const searchQuery = ref('')
 
 const viewDialogVisible = ref(false)
 const selectedApp = ref(null)
@@ -230,6 +291,20 @@ const form = ref({
   launch_url: '',
   is_active: true
 })
+
+const filteredApplications = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase()
+
+  return applications.value.filter(app => {
+    if (!q) return true
+
+    return app.name?.toLowerCase().includes(q)
+  })
+})
+
+async function loadApplications() {
+  await applicationsStore.fetchApplications()
+}
 
 function viewApplication(app) {
   selectedApp.value = app
@@ -285,9 +360,7 @@ function confirmDelete(app) {
   })
 }
 
-onMounted(() => {
-  applicationsStore.fetchApplications()
-})
+onMounted(loadApplications)
 </script>
 
 <style scoped>
