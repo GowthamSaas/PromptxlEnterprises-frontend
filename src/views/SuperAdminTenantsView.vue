@@ -36,6 +36,7 @@
           />
         </IconField>
         <Button
+          type="button"
           icon="pi pi-refresh"
           severity="secondary"
           text
@@ -129,9 +130,15 @@
         <Column header="Actions" style="width: 160px">
           <template #body="{ data }">
             <div class="sa-action-buttons">
-              <Button icon="pi pi-eye" text class="sa-table-action" @click="viewTenant(data)" />
-              <Button icon="pi pi-pencil" text class="sa-table-action" @click="editTenant(data)" />
-              <Button icon="pi pi-trash" text class="sa-table-action" @click="confirmDeleteTenant(data)" />
+              <button type="button" class="p-button p-button-text sa-table-action" @click.stop.prevent="viewTenant(data)">
+                <i class="pi pi-eye"></i>
+              </button>
+              <button type="button" class="p-button p-button-text sa-table-action" @click.stop.prevent="editTenant(data)">
+                <i class="pi pi-pencil"></i>
+              </button>
+              <button type="button" class="p-button p-button-text sa-table-action" @click.stop.prevent="confirmDeleteTenant(data)">
+                <i class="pi pi-trash"></i>
+              </button>
             </div>
           </template>
         </Column>
@@ -262,6 +269,7 @@ async function saveTenant() {
   if (!editingTenant.value) return
   try {
     await tenantsAPI.update(editingTenant.value.id, {
+      tenant_id: editingTenant.value.tenant_id,
       company_name: editForm.value.company_name,
       contact_email: editForm.value.contact_email,
       contact_phone: editForm.value.contact_phone,
@@ -282,11 +290,22 @@ function confirmDeleteTenant(tenant) {
     icon: 'pi pi-exclamation-triangle',
     accept: async () => {
       try {
-        await tenantsAPI.delete(tenant.id)
-        toast.add({ severity: 'success', summary: 'Deleted', detail: 'Tenant deleted successfully', life: 3000 })
+        // resolve numeric DB id; fallback to tenant_id string if needed
+        const resolvedId = tenant.id ?? tenants.value.find(t => t.tenant_id === tenant.tenant_id)?.id
+        const target = resolvedId ?? tenant.tenant_id
+        console.log('Deleting tenant target:', target, 'tenant:', tenant)
+        if (!target) {
+          toast.add({ severity: 'error', summary: 'Error', detail: 'Could not determine tenant identifier to delete', life: 4000 })
+          return
+        }
+
+        const response = await tenantsAPI.delete(target)
+        toast.add({ severity: 'success', summary: 'Deleted', detail: response.data?.detail || 'Tenant deleted successfully', life: 3000 })
         await loadTenants()
       } catch (e) {
-        toast.add({ severity: 'error', summary: 'Error', detail: e.response?.data?.detail || 'Could not delete tenant', life: 3000 })
+        console.error('Delete tenant error:', e)
+        const serverMsg = e.response?.data?.detail ?? (e.response?.data ? JSON.stringify(e.response.data) : e.message)
+        toast.add({ severity: 'error', summary: 'Error', detail: serverMsg || 'Could not delete tenant', life: 6000 })
       }
     }
   })
@@ -363,20 +382,75 @@ onMounted(loadTenants)
 
 .sa-status-cell {
   display: flex;
-  justify-content: center;
+  justify-content: left;
 }
 
-.sa-action-buttons {
+.sa-status-cell :deep(.p-tag) {
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 700;
+  background: #dcfce7;
+  color: #065f46;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 6px 18px rgba(16,185,129,0.12);
+  border: none;
+  text-transform: none;
+  font-size: 0.85rem;
+}
+
+.sa-status-cell :deep(.p-tag) :deep(.pi) {
+  color: #10b981;
+  font-size: 1rem;
+}
+
+/* .sa-action-buttons {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 0px;
+} */
+ .sa-action-buttons {
+  display: flex;
+  justify-content: flex-start;   /* center → flex-start */
+  gap: 0px;
+  width: 100%;
 }
 
-.sa-table-action .p-button {
-  height: 32px;
-  width: 32px;
-  min-width: 32px;
+/* Circular icon-only action buttons (view / edit / delete) */
+.sa-action-buttons button.sa-table-action {
+  height: 36px;
+  width: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background .18s ease, transform .18s ease;
 }
+
+.sa-action-buttons button.sa-table-action:hover {
+  background: rgba(99,102,241,0.08);
+  transform: translateY(-1px);
+}
+
+.sa-action-buttons button.sa-table-action:focus {
+  outline: 2px solid rgba(59,130,246,0.35);
+  outline-offset: 2px;
+}
+
+.sa-action-buttons button.sa-table-action .pi {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.sa-action-buttons button.sa-table-action .pi.pi-eye { color: #3b82f6; }
+.sa-action-buttons button.sa-table-action .pi.pi-pencil { color: #7c3aed; }
+.sa-action-buttons button.sa-table-action .pi.pi-trash { color: #ef4444; }
 
 .sa-edit-form {
   display: grid;

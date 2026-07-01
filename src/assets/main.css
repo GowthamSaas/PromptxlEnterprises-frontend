@@ -525,13 +525,14 @@ body {
   border-radius: 20px;
   box-shadow: 0 2px 16px rgba(15,23,42,.07);
   border: 1px solid rgba(15,23,42,.06);
-  padding: 28px;
+  padding: 30px;
 }
 
 .sa-panel-header {
   display: flex;
   align-items: flex-start;
   gap: 16px;
+  padding: 0 15px 15px;
 }
 
 .sa-panel-icon {
@@ -679,7 +680,7 @@ body {
 }
 
 .sa-data-table .p-datatable-tbody > tr > td {
-  padding: 14px 20px;
+  padding: 14px 10px; 
   border-color: #f1f5f9;
   vertical-align: middle;
 }
