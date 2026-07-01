@@ -81,18 +81,19 @@ function logout() {
 <style scoped>
 .dashboard-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar {
   width: 280px;
   min-height: 100vh;
   padding: 28px 24px 32px;
-  background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.22), transparent 28%),
-              linear-gradient(180deg, rgba(102,126,234,0.98), rgba(79,70,229,0.95));
+  background: linear-gradient(175deg, #1e1b4b 0%, #312e81 55%, #4338ca 100%);
   color: #eff6ff;
   display: flex;
   flex-direction: column;
+  
 }
 
 .logo {
@@ -222,9 +223,9 @@ function logout() {
 
 .main-content {
   flex: 1;
-  padding: 28px 32px;
-  background: transparent;
+  height: 100vh;
   overflow-y: auto;
+  padding: 28px 32px;
   min-width: 0;
 }
 
