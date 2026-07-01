@@ -16,14 +16,42 @@
           </div>
         </template>
         <template #content>
-          <Listbox 
-            v-model="selectedUser" 
-            :options="users" 
-            optionLabel="full_name" 
-            class="w-full user-listbox"
-            :filter="true"
-            filterPlaceholder="Search users..."
-          >
+          <div
+    style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+        margin-bottom:16px;
+    "
+>
+    <IconField
+        iconPosition="left"
+        style="flex:1;"
+    >
+        <InputIcon class="pi pi-search" />
+
+        <InputText
+            v-model="userSearch"
+            placeholder="Search users..."
+            style="width:100%;"
+        />
+    </IconField>
+
+    <Button
+        icon="pi pi-refresh"
+        severity="secondary"
+        outlined
+        rounded
+        @click="usersStore.fetchUsers()"
+    />
+</div>
+
+<Listbox
+    v-model="selectedUser"
+    :options="filteredUsers"
+    optionLabel="full_name"
+    class="w-full user-listbox"
+>
             <template #option="{ option }">
               <div class="user-option">
                 <div>
@@ -93,13 +121,30 @@ import Listbox from 'primevue/listbox'
 import Checkbox from 'primevue/checkbox'
 import Tag from 'primevue/tag'
 import InputText from 'primevue/inputtext'
+import Button from 'primevue/button'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
+const userSearch = ref('')
 const toast = useToast()
 const usersStore = useUsersStore()
 const applicationsStore = useApplicationsStore()
 
 const searchQuery = ref('')
-const users = computed(() => usersStore.users.filter(u => u.role === 'user'))
+const filteredUsers = computed(() => {
+    const query = userSearch.value.trim().toLowerCase()
+
+    return usersStore.users
+        .filter(user => user.role === 'user')
+        .filter(user => {
+            if (!query) return true
+
+            return (
+                user.full_name?.toLowerCase().includes(query) ||
+                user.email?.toLowerCase().includes(query)
+            )
+        })
+})
 const applications = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
   if (!query) return applicationsStore.applications
@@ -170,24 +215,24 @@ onMounted(() => {
 <style scoped>
 /* ── Page-specific layout ── */
 .assignment-container {
-  display: grid;
-  grid-template-columns: minmax(320px, 400px) 1fr;
-  gap: 24px;
-  align-items: stretch;
-  min-height: 650px;
+    display:grid;
+    grid-template-columns:360px 1fr;
+    gap:24px;
+    height:calc(100vh - 180px);
 }
 
 .user-select-card,
 .apps-assign-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
+    display:flex;
+    flex-direction:column;
+    height:100%;
 }
 
 :deep(.p-card-content) {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    overflow:hidden;
 }
 
 .user-listbox { 
@@ -195,12 +240,16 @@ onMounted(() => {
   background: transparent !important;
 }
 
+.user-listbox {
+    display:flex;
+    flex-direction:column;
+    height:100%;
+}
+
 .user-select-card :deep(.p-listbox-list-wrapper) {
-  flex: 1 1 0;
-  min-height: 0;
-  max-height: 520px;
-  overflow-y: auto;
-  padding: 0;
+    flex:1;
+    height:100%;
+    overflow-y:auto;
 }
 
 :deep(.p-listbox-item) {
@@ -213,7 +262,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  flex: 1 1 0;
+  flex: 1;
   min-height: 0;
   max-height: 520px;
   overflow-y: auto;

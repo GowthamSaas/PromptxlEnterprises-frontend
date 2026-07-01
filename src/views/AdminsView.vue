@@ -10,28 +10,38 @@
 
     <div class="management-panel">
 
-<div class="sa-table-toolbar">
-
-    <IconField iconPosition="left" class="sa-search-field">
+<div
+    style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+        margin-bottom:18px;
+    "
+>
+    <IconField
+        iconPosition="left"
+        style="
+            flex:1;
+            width:100%;
+        "
+    >
         <InputIcon class="pi pi-search" />
 
         <InputText
             v-model="searchQuery"
             placeholder="Search admins..."
-            class="sa-search-input"
+            style="width:100%;"
         />
-
     </IconField>
 
     <Button
         icon="pi pi-refresh"
         severity="secondary"
-        text
+        outlined
         rounded
         :loading="loading"
         @click="loadAdmins"
     />
-
 </div>
 
       <DataTable 

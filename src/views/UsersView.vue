@@ -10,9 +10,18 @@
 
     <div class="management-panel">
 
-<div class="sa-table-toolbar">
+<div  style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+        margin-bottom:18px;
+    ">
 
-    <IconField iconPosition="left" class="sa-search-field">
+    <IconField iconPosition="left"
+        style="
+            flex:1;
+            width:100%;
+        ">
         <InputIcon class="pi pi-search" />
 
         <InputText
@@ -26,7 +35,7 @@
     <Button
         icon="pi pi-refresh"
         severity="secondary"
-        text
+        outlined
         rounded
         :loading="loading"
         @click="loadUsers"

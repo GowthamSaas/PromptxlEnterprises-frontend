@@ -350,10 +350,13 @@ body {
 .p-inputtext:not(.custom-input),
 .p-password-input:not(.custom-input),
 .p-dropdown {
-  min-height: 3.25rem;
-  font-size: 1rem;
-  width: 100%;
-  padding-left: 1.25rem !important; /* Ensure 3-4 characters of space */
+    min-height: 3.25rem;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.p-iconfield .p-inputtext {
+    padding-left: 2.75rem !important;
 }
 
 /* Textarea: proper padding, no min-height force */
