@@ -18,21 +18,30 @@
           </div>
 
           <form @submit.prevent="handleLogin" class="login-form">
-            <div class="input-group">
-              <label for="email">Root Email</label>
-              <div class="input-wrapper">
-                <i class="pi pi-envelope input-icon"></i>
-                <InputText id="email" v-model="email" type="email" placeholder="root@promptxl.enterprise" required class="w-full custom-input" />
-              </div>
-            </div>
+            <div class="input-wrapper">
+    <i class="pi pi-envelope input-icon"></i>
 
-            <div class="input-group">
-              <label for="password">Security Password</label>
-              <div class="input-wrapper">
-                <i class="pi pi-lock input-icon"></i>
-                <Password id="password" v-model="password" placeholder="••••••••" :feedback="false" toggleMask required class="w-full custom-password" inputClass="w-full custom-input" />
-              </div>
-            </div>
+    <InputText
+        v-model="email"
+        placeholder="root@promptxl.enterprise"
+        fluid
+        class="custom-input"
+    />
+</div>
+
+<div class="input-wrapper">
+    <i class="pi pi-lock input-icon"></i>
+
+    <Password
+        v-model="password"
+        :feedback="false"
+        toggleMask
+        fluid
+        inputClass="custom-input"
+        placeholder="••••••••" 
+        class="custom-password"
+    />
+</div>
 
             <Button type="submit" :loading="loading" label="Authenticate" icon="pi pi-angle-right" iconPos="right" class="cyber-btn w-full" />
           </form>
@@ -260,5 +269,37 @@ async function handleLogin() {
   .header-section h1 {
     font-size: 1.75rem;
   }
+}
+
+.input-wrapper{
+    position:relative;
+}
+
+.input-icon{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:2;
+    color:#94a3b8;
+}
+
+:deep(.custom-input){
+    height:52px;
+    padding-left:42px !important;
+}
+
+:deep(.custom-password){
+    width:100%;
+}
+
+:deep(.custom-password .p-inputtext){
+    width:100%;
+    padding-left:42px !important;
+    padding-right:42px !important;
+}
+
+:deep(.custom-password .p-password-toggle-mask-icon){
+    right:14px;
 }
 </style>

@@ -223,32 +223,32 @@
         <form @submit.prevent="handleLogin" :style="{ display: 'flex', flexDirection: 'column', gap: '16px' }">
 
           <!-- Email -->
-          <div class="field-wrapper" :style="{ position: 'relative', width: '100%' }">
-            <i class="pi pi-envelope field-icon"></i>
-            <InputText
-              id="email"
-              v-model="email"
-              type="email"
-              placeholder="Email address"
-              required
-              class="w-full custom-input"
-            />
-          </div>
+          <div class="field-wrapper">
+    <i class="pi pi-envelope field-icon"></i>
+
+    <InputText
+        v-model="email"
+        type="email"
+        placeholder="Email address"
+        fluid
+        class="custom-input"
+    />
+</div>
 
           <!-- Password -->
-          <div class="field-wrapper" :style="{ position: 'relative', width: '100%' }">
-            <i class="pi pi-lock field-icon"></i>
-            <Password
-              id="password"
-              v-model="password"
-              placeholder="Password"
-              :feedback="false"
-              toggleMask
-              required
-              class="w-full custom-password"
-              inputClass="w-full custom-input password-input"
-            />
-          </div>
+          <div class="field-wrapper">
+    <i class="pi pi-lock field-icon"></i>
+
+    <Password
+        v-model="password"
+        placeholder="Password"
+        :feedback="false"
+        toggleMask
+        fluid
+        class="custom-password"
+        inputClass="custom-password-input"
+    />
+</div>
 
           <Button
             type="submit"
@@ -328,16 +328,65 @@ function handleGoogleSignIn() {
 }
 
 /* field-icon needs focus-within interaction */
-.field-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #64748b;
-  font-size: 1rem;
-  z-index: 10;
-  pointer-events: none;
-  transition: color 0.2s;
+.field-wrapper{
+    position:relative;
+    width:100%;
+}
+
+.field-icon{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:10;
+    color:#94a3b8;
+    pointer-events:none;
+}
+
+/* Email */
+
+:deep(.custom-input){
+    width:100%;
+    height:52px;
+    padding-left:42px !important;
+    box-sizing:border-box;
+}
+
+/* Password wrapper */
+
+:deep(.custom-password){
+    width:100%;
+}
+
+/* PrimeVue 4 wrapper */
+
+:deep(.custom-password .p-inputtext){
+    width:100%;
+    height:52px;
+    padding-left:42px !important;
+    padding-right:42px !important;
+    box-sizing:border-box;
+}
+
+/* Eye Icon */
+
+:deep(.custom-password .p-password-toggle-mask-icon){
+    right:14px;
+    color:#94a3b8;
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+    :deep(.custom-input),
+    :deep(.custom-password .p-inputtext){
+
+        height:48px;
+        font-size:14px;
+
+    }
+
 }
 
 /* responsive: cannot be done inline */
