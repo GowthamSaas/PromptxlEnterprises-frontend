@@ -6,21 +6,6 @@
         <h1 class="sa-page-title">Tenants</h1>
         <p class="sa-page-sub">All registered company tenants on the PromptXL platform.</p>
       </div>
-      <!-- <Button
-        type="button"
-        size="large"
-        :disabled="loading"
-        @click="$router.push('/superadmin/tenants/create')"
-      >
-        <i v-if="loading" class="pi pi-spinner pi-spin"></i>
-        <i v-else class="pi pi-plus"></i>
-        {{ loading ? 'Loading...' : 'Newrrrrr Tenant' }}
-      </Button>
-
-      <Button size="large">
-        <i class="pi pi-check"></i>
-        Large
-      </Button> -->
     </div>
 
     <!-- Tenants Table Card -->
@@ -255,14 +240,9 @@ function viewTenant(tenant) {
 }
 
 function editTenant(tenant) {
-  editingTenant.value = tenant
-  editForm.value = {
-    company_name: tenant.company_name || '',
-    contact_email: tenant.contact_email || '',
-    contact_phone: tenant.contact_phone || '',
-    address: tenant.address || ''
-  }
-  editDialogVisible.value = true
+  const editStorageKey = 'superadmin.editTenant'
+  window.sessionStorage.setItem(editStorageKey, JSON.stringify(tenant))
+  router.push({ name: 'SuperAdminTenantCreate', query: { edit: '1' } })
 }
 
 async function saveTenant() {
@@ -439,6 +419,10 @@ onMounted(loadTenants)
 }
 
 .sa-action-buttons button.sa-table-action:focus {
+  outline: none;
+}
+
+.sa-action-buttons button.sa-table-action:focus-visible {
   outline: 2px solid rgba(59,130,246,0.35);
   outline-offset: 2px;
 }

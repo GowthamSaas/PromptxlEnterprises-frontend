@@ -3,8 +3,10 @@
     <!-- Page Header -->
     <div class="sa-page-header">
       <div>
-        <h1 class="sa-page-title">Create Tenant</h1>
-        <p class="sa-page-sub">Onboard a new company and register its first administrator account.</p>
+        <h1 class="sa-page-title">{{ editMode ? 'Edit Tenant' : 'Create Tenant' }}</h1>
+        <p class="sa-page-sub">
+          {{ editMode ? 'Update tenant details and keep the owner account unchanged.' : 'Onboard a new company and register its first administrator account.' }}
+        </p>
       </div>
     </div>
 
@@ -34,13 +36,16 @@
               <InputText
                 id="tenantId"
                 v-model="tenantId"
+                @input="markTenantIdTouched"
                 placeholder="e.g. acme-corp"
                 class="sa-input"
                 :class="{ 'p-invalid': errors.tenantId }"
                 autocomplete="off"
               />
               <small v-if="errors.tenantId" class="sa-error-msg">{{ errors.tenantId }}</small>
-              <small v-else class="sa-hint">Unique identifier for the tenant (slug format recommended).</small>
+              <small v-else class="sa-hint">
+                {{ editMode ? 'Unique identifier for the tenant.' : 'Auto-generated from company name unless edited.' }}
+              </small>
             </div>
 
             <div class="sa-field" :class="{ 'sa-field--error': errors.companyName }">
@@ -101,7 +106,7 @@
         </div>
 
         <!-- ── Right: Owner Account ── -->
-        <div class="sa-panel">
+        <div class="sa-panel" v-if="!editMode">
           <div class="sa-panel-header">
             <div class="sa-panel-icon sa-panel-icon--violet">
               <i class="pi pi-user"></i>
@@ -184,6 +189,41 @@
             />
           </div>
         </div>
+        <div class="sa-panel" v-else>
+          <div class="sa-panel-header">
+            <div class="sa-panel-icon sa-panel-icon--violet">
+              <i class="pi pi-pencil"></i>
+            </div>
+            <div>
+              <h2 class="sa-panel-title">Edit Tenant</h2>
+              <p class="sa-panel-desc">Update the tenant details and save changes.</p>
+            </div>
+          </div>
+
+          <Divider class="sa-divider" />
+
+          <div class="sa-fields">
+            <div class="sa-field sa-panel-note">
+              <p>Editing tenant details only. Owner credentials are not changed here.</p>
+            </div>
+          </div>
+
+          <div class="sa-form-actions">
+            <Button
+              type="button"
+              label="Cancel"
+              severity="secondary"
+              outlined
+              @click="$router.push('/superadmin/tenants')"
+            />
+            <Button
+              type="submit"
+              label="Update Tenant"
+              icon="pi pi-check"
+              :loading="loading"
+            />
+          </div>
+        </div>
 
       </div>
     </form>
@@ -191,8 +231,8 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
 import { useAuthStore } from '../stores/auth'
 import { tenantsAPI } from '../services/api'
@@ -203,6 +243,7 @@ import Button from 'primevue/button'
 import Divider from 'primevue/divider'
 
 const router = useRouter()
+const route = useRoute()
 const toast = useToast()
 const authStore = useAuthStore()
 
@@ -215,6 +256,30 @@ const ownerFullName = ref('')
 const ownerEmail = ref('')
 const ownerPassword = ref('')
 const loading = ref(false)
+const editMode = ref(false)
+const editTenantData = ref(null)
+const tenantIdTouched = ref(false)
+
+function generateTenantId(source) {
+  return source
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
+watch(companyName, (value) => {
+  if (!editMode.value && !tenantIdTouched.value) {
+    tenantId.value = generateTenantId(value)
+  }
+})
+
+function markTenantIdTouched() {
+  tenantIdTouched.value = true
+}
 
 const errors = reactive({
   tenantId: '',
@@ -225,15 +290,40 @@ const errors = reactive({
   ownerPassword: ''
 })
 
+function initForm() {
+  const editTenant = route.query.edit === '1' ? JSON.parse(window.sessionStorage.getItem('superadmin.editTenant') || 'null') : null
+  if (editTenant) {
+    editMode.value = true
+    editTenantData.value = editTenant
+    tenantId.value = editTenant.tenant_id || ''
+    companyName.value = editTenant.company_name || ''
+    contactEmail.value = editTenant.contact_email || ''
+    contactPhone.value = editTenant.contact_phone || ''
+    address.value = editTenant.address || ''
+    ownerFullName.value = ''
+    ownerEmail.value = ''
+    ownerPassword.value = ''
+  }
+}
+
+onMounted(initForm)
+
 function validate() {
   let valid = true
 
   errors.tenantId = tenantId.value.trim() ? '' : 'Tenant ID is required.'
   errors.companyName = companyName.value.trim() ? '' : 'Company name is required.'
   errors.contactEmail = contactEmail.value.trim() ? '' : 'Contact email is required.'
-  errors.ownerFullName = ownerFullName.value.trim() ? '' : 'Owner full name is required.'
-  errors.ownerEmail = ownerEmail.value.trim() ? '' : 'Owner email is required.'
-  errors.ownerPassword = ownerPassword.value.length >= 8 ? '' : 'Password must be at least 8 characters.'
+
+  if (!editMode.value) {
+    errors.ownerFullName = ownerFullName.value.trim() ? '' : 'Owner full name is required.'
+    errors.ownerEmail = ownerEmail.value.trim() ? '' : 'Owner email is required.'
+    errors.ownerPassword = ownerPassword.value.length >= 8 ? '' : 'Password must be at least 8 characters.'
+  } else {
+    errors.ownerFullName = ''
+    errors.ownerEmail = ''
+    errors.ownerPassword = ''
+  }
 
   for (const k in errors) {
     if (errors[k]) valid = false
@@ -245,20 +335,31 @@ async function handleSubmit() {
   if (!validate()) return
   loading.value = true
   try {
-    await tenantsAPI.create({
-      tenant_id: tenantId.value,
-      company_name: companyName.value,
-      contact_email: contactEmail.value,
-      contact_phone: contactPhone.value,
-      address: address.value,
-      owner_full_name: ownerFullName.value,
-      owner_email: ownerEmail.value,
-      owner_password: ownerPassword.value
-    })
-    toast.add({ severity: 'success', summary: 'Tenant Created', detail: `${companyName.value} has been onboarded successfully.`, life: 4000 })
+    if (editMode.value && editTenantData.value?.id) {
+      await tenantsAPI.update(editTenantData.value.id, {
+        tenant_id: tenantId.value,
+        company_name: companyName.value,
+        contact_email: contactEmail.value,
+        contact_phone: contactPhone.value,
+        address: address.value
+      })
+      toast.add({ severity: 'success', summary: 'Tenant Updated', detail: `${companyName.value} has been updated successfully.`, life: 4000 })
+    } else {
+      await tenantsAPI.create({
+        tenant_id: tenantId.value,
+        company_name: companyName.value,
+        contact_email: contactEmail.value,
+        contact_phone: contactPhone.value,
+        address: address.value,
+        owner_full_name: ownerFullName.value,
+        owner_email: ownerEmail.value,
+        owner_password: ownerPassword.value
+      })
+      toast.add({ severity: 'success', summary: 'Tenant Created', detail: `${companyName.value} has been onboarded successfully.`, life: 4000 })
+    }
     router.push('/superadmin/tenants')
   } catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error.response?.data?.detail || 'Unable to create tenant', life: 5000 })
+    toast.add({ severity: 'error', summary: 'Error', detail: error.response?.data?.detail || 'Unable to save tenant', life: 5000 })
   } finally {
     loading.value = false
   }
@@ -274,6 +375,20 @@ async function handleSubmit() {
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   align-items: start;
+}
+
+.sa-panel .sa-fields {
+  padding-bottom: 1.5rem;
+}
+
+.sa-form-actions {
+  margin-top: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+:deep(.p-password-panel) {
+  z-index: 1 !important;
 }
 
 /* Fix: Reset padding-left on sa-inputs that inherit the global 1.25rem rule */
