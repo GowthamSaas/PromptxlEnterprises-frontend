@@ -107,7 +107,7 @@ const router = createRouter({
           meta: { requiresAuth: true },
           children: [
             {
-              path: '',
+              path: 'createapp',
               name: 'CreateApp',
               component: () => import('../views/ai_workspace/CreateAppView.vue')
             }
