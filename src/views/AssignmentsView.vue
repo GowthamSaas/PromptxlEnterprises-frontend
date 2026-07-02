@@ -51,6 +51,7 @@
     :options="filteredUsers"
     optionLabel="full_name"
     class="w-full user-listbox"
+    :listStyle="{ maxHeight: '100%' }"
 >
             <template #option="{ option }">
               <div class="user-option">
@@ -223,16 +224,28 @@ onMounted(() => {
 
 .user-select-card,
 .apps-assign-card {
-    display:flex;
-    flex-direction:column;
-    height:100%;
+    height: 100%;
+}
+
+.user-select-card :deep(.p-card),
+.apps-assign-card :deep(.p-card) {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+:deep(.p-card-body) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 :deep(.p-card-content) {
-    display:flex;
-    flex-direction:column;
-    flex:1;
-    overflow:hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .user-listbox { 
@@ -241,15 +254,20 @@ onMounted(() => {
 }
 
 .user-listbox {
-    display:flex;
-    flex-direction:column;
-    height:100%;
+    flex: 1;
+    min-height: 0;
+}
+
+.user-select-card :deep(.p-listbox) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }
 
 .user-select-card :deep(.p-listbox-list-wrapper) {
-    flex:1;
-    height:100%;
-    overflow-y:auto;
+    flex: 1;
+    overflow-y: auto;
 }
 
 :deep(.p-listbox-item) {
