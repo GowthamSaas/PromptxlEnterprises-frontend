@@ -76,6 +76,72 @@ const router = createRouter({
           name: 'Assignments',
           component: () => import('../views/AssignmentsView.vue'),
           meta: { roles: ['owner', 'admin'] }
+        },
+        {
+          path: 'connectors',
+          component: () => import('../layouts/AIWorkspaceLayout.vue'),
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: '',
+              name: 'Connectors',
+              component: () => import('../views/ai_workspace/ConnectorsView.vue')
+            }
+          ]
+        },
+        {
+          path: 'llm/providers',
+          component: () => import('../layouts/AIWorkspaceLayout.vue'),
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: '',
+              name: 'LLMProviders',
+              component: () => import('../views/ai_workspace/LLMProvidersView.vue')
+            }
+          ]
+        },
+        {
+          path: 'create-app',
+          component: () => import('../layouts/AIWorkspaceLayout.vue'),
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: '',
+              name: 'CreateApp',
+              component: () => import('../views/ai_workspace/CreateAppView.vue')
+            }
+            ,
+            {
+              path: 'guide',
+              name: 'CreateAppGuide',
+              component: () => import('../views/ai_workspace/CreateAppGuideView.vue')
+            }
+          ]
+        },
+        {
+          path: 'my-apps',
+          component: () => import('../layouts/AIWorkspaceLayout.vue'),
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: '',
+              name: 'MyApps',
+              component: () => import('../views/ai_workspace/MyAppsView.vue')
+            }
+          ]
+        },
+        {
+          path: 'history',
+          component: () => import('../layouts/AIWorkspaceLayout.vue'),
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: '',
+              name: 'History',
+              component: () => import('../views/ai_workspace/HistoryView.vue')
+            }
+          ]
         }
       ]
     }
