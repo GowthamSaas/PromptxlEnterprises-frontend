@@ -32,6 +32,10 @@
             <i class="pi pi-link"></i>
             <span>Assignments</span>
           </router-link>
+          <router-link to="/create-app/guide" class="nav-item">
+            <i class="pi pi-plus-circle"></i>
+            <span>Create Custom App</span>
+          </router-link>
         </template>
       </nav>
       
@@ -76,6 +80,8 @@ function logout() {
   authStore.logout()
   router.push('/login')
 }
+
+// navigation handled via router-link to the guide page
 </script>
 
 <style scoped>
