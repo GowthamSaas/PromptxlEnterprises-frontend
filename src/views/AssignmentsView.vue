@@ -80,12 +80,38 @@
             <i class="pi pi-arrow-left"></i>
             <p>Select a user to manage their applications</p>
           </div>
-          <div v-else>
-            <InputText
-              v-model="searchQuery"
-              placeholder="Search applications by name or description"
-              style="width:100%; max-width:360px; margin-bottom:8px;"
-            />
+
+           <div v-else>
+            <div
+                style="
+                    display:flex;
+                    align-items:center;
+                    gap:6px;
+                    margin-bottom:16px;
+                "
+            >
+                <IconField
+                    iconPosition="left"
+                    style="flex:1;"
+                >
+                    <InputIcon class="pi pi-search" />
+ 
+                    <InputText
+                        v-model="searchQuery"
+                        placeholder="Search applications by name or description"
+                        style="width:100%;"
+                    />
+                </IconField>
+ 
+                <Button
+                    icon="pi pi-refresh"
+                    severity="secondary"
+                    outlined
+                    rounded
+                    @click="applicationsStore.fetchApplications()"
+                />
+            </div>
+            
             <div class="apps-checklist">
               <div v-for="app in applications" :key="app.id" class="app-checkbox">
                 <Checkbox 
