@@ -237,8 +237,9 @@ onMounted(() => {
 :deep(.p-card-body) {
     flex: 1;
     display: flex;
-    flex-direction: column;
+    
     overflow: hidden;
+    flex-direction: column;
 }
 
 :deep(.p-card-content) {
