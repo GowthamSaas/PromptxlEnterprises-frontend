@@ -46,16 +46,16 @@
           toggleMask
           :feedback="false"
           fluid
-          :disabled="loading"
+          :disabled="localLoading"
         />
       </IconField>
 
       <!-- Connect Button -->
       <Button
-        :label="loading ? 'Validating...' : 'Connect Supabase'"
-        :icon="loading ? '' : 'pi pi-check-circle'"
-        :loading="loading"
-        :disabled="loading"
+        :label="localLoading ? 'Validating...' : 'Connect Supabase'"
+        :icon="localLoading ? '' : 'pi pi-check-circle'"
+        :loading="localLoading"
+        :disabled="localLoading"
         fluid
         @click="connect"
       />
@@ -247,7 +247,7 @@ const connectorStore = useConnectorStore()
 
 const toast = useToast()
 
-const loading = computed(() => connectorStore.loading)
+const localLoading = ref(false)
 
 const isConnected = computed(() => {
   return connectorStore.connectors.supabase.connected
@@ -276,29 +276,51 @@ async function connect() {
     return
   }
 
-  await connectorStore.connectConnector({
-    provider: 'supabase'
-  })
+  localLoading.value = true
 
-  toast.add({
-    severity: 'success',
-    summary: 'Connected',
-    detail: 'Supabase connected successfully.',
-    life: 3000
-  })
+  try {
+    await connectorStore.connectConnector({
+      provider: 'supabase',
+      token: token.value
+    })
+
+    toast.add({
+      severity: 'success',
+      summary: 'Connected',
+      detail: 'Supabase connected successfully.',
+      life: 3000
+    })
+  }
+  catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Connection failed',
+      detail: error?.response?.data?.detail || error?.message || 'Unable to connect Supabase.',
+      life: 4000
+    })
+  }
+  finally {
+    localLoading.value = false
+  }
 }
 
 async function disconnect() {
+  localLoading.value = true
 
-  await connectorStore.disconnectConnector('supabase')
+  try {
+    await connectorStore.disconnectConnector('supabase')
 
-  token.value = ''
+    token.value = ''
 
-  toast.add({
-    severity: 'success',
-    summary: 'Disconnected',
-    detail: 'Supabase disconnected successfully.',
-    life: 3000
-  })
+    toast.add({
+      severity: 'success',
+      summary: 'Disconnected',
+      detail: 'Supabase disconnected successfully.',
+      life: 3000
+    })
+  }
+  finally {
+    localLoading.value = false
+  }
 }
 </script>

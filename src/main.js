@@ -64,6 +64,7 @@ import router from './router'
 import { useAuthStore } from './stores/auth'
 
 import 'primeicons/primeicons.css'
+import 'primeflex/primeflex.css'
 import './assets/main.css'
 
 async function bootstrap() {

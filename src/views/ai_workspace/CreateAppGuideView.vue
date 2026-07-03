@@ -1,49 +1,98 @@
 <template>
-  <div class="create-app-guide">
-    <h2>Create Custom App — Quick Guide</h2>
-    <p class="subtitle">Follow these steps to connect services, add LLM providers, and scaffold your app.</p>
+  <div class="create-app-guide surface-0 p-4">
+    <div class="flex flex-column gap-4">
+      <div class="flex flex-column gap-2">
+        <h2 class="text-3xl font-bold text-900">Create Custom App — Quick Guide</h2>
+        <p class="text-600 text-base">Follow these steps to connect services, add LLM providers, and scaffold your app.</p>
+      </div>
 
-    <div class="guide-grid">
-      <Card class="guide-card" :class="{ active: selectedSection === 'connectors' }" @click="selectSection('connectors')">
-        <template #title>
-          <div class="card-title"><i class="pi pi-sitemap"></i> Connectors</div>
-        </template>
-        <p>Link external services (Supabase, GitHub, Vercel) to enable deployment and storage.</p>
-        <Button label="Go to Connectors" class="p-mt-4" @click.stop="goTo('/connectors')" />
-      </Card>
+      <div class="flex gap-3 w-full">
+        <div class="flex-1 min-w-0">
+          <Card
+            class="surface-card border-round-xl shadow-2 guide-card transition-duration-200 hover:shadow-4 cursor-pointer"
+            :class="{ 'border-primary': selectedSection === 'connectors' }"
+            @click="selectSection('connectors')"
+            :pt="{ body: { style: 'padding: 0.85rem' }, content: { style: 'padding: 0' } }"
+          >
+            <template #content>
+              <div class="flex align-items-center gap-2">
+                <div class="badge-icon surface-100 text-primary flex align-items-center justify-content-center flex-shrink-0">
+                  <i class="pi pi-sitemap text-base"></i>
+                </div>
+                <div class="text-900 font-semibold text-sm">Connectors</div>
+              </div>
+              <div class="text-500 text-xs line-height-3 mt-2">Link external services (Supabase, GitHub, Vercel) to enable deployment and storage.</div>
+            </template>
+          </Card>
+        </div>
 
-      <Card class="guide-card" :class="{ active: selectedSection === 'llm' }" @click="selectSection('llm')">
-        <template #title>
-          <div class="card-title"><i class="pi pi-cog"></i> LLM Providers</div>
-        </template>
-        <p>Connect your OpenAI / Anthropic / Google keys to allow generation and runtime calls.</p>
-        <Button label="Go to LLM Providers" class="p-mt-4" @click.stop="goTo('/llm/providers')" />
-      </Card>
+        <div class="flex-1 min-w-0">
+          <Card
+            class="surface-card border-round-xl shadow-2 guide-card transition-duration-200 hover:shadow-4 cursor-pointer"
+            :class="{ 'border-primary': selectedSection === 'llm' }"
+            @click="selectSection('llm')"
+            :pt="{ body: { style: 'padding: 0.85rem' }, content: { style: 'padding: 0' } }"
+          >
+            <template #content>
+              <div class="flex align-items-center gap-2">
+                <div class="badge-icon surface-100 text-purple-600 flex align-items-center justify-content-center flex-shrink-0">
+                  <i class="pi pi-cog text-base"></i>
+                </div>
+                <div class="text-900 font-semibold text-sm">LLM Providers</div>
+              </div>
+              <div class="text-500 text-xs line-height-3 mt-2">Connect your OpenAI / Anthropic / Google keys to allow generation and runtime calls.</div>
+            </template>
+          </Card>
+        </div>
 
-      <Card class="guide-card" :class="{ active: selectedSection === 'createApp' }" @click="selectSection('createApp')">
-        <template #title>
-          <div class="card-title"><i class="pi pi-plus-circle"></i> Create App</div>
-        </template>
-        <p>Describe the app you want to generate and use templates to scaffold a project.</p>
-        <Button label="Go to Create App" class="p-mt-4" @click.stop="goTo('/create-app/createapp')" />
-      </Card>
-    </div>
-
-    <div class="detail-card p-mt-6" :key="selectedSection" v-if="selectedInfo">
-      <div class="detail-title"><i :class="selectedInfo.icon"></i> {{ selectedInfo.title }}</div>
-      <p class="detail-description">{{ selectedInfo.description }}</p>
-      <div class="detail-steps" v-if="selectedInfo.steps?.length">
-        <div v-for="(step, index) in selectedInfo.steps" :key="index" class="step-item">
-          <div class="step-number">{{ index + 1 }}</div>
-          <div>
-            <div class="step-label">{{ step.title }}</div>
-            <p class="step-text">{{ step.text }}</p>
-          </div>
+        <div class="flex-1 min-w-0">
+          <Card
+            class="surface-card border-round-xl shadow-2 guide-card transition-duration-200 hover:shadow-4 cursor-pointer"
+            :class="{ 'border-primary': selectedSection === 'createApp' }"
+            @click="selectSection('createApp')"
+            :pt="{ body: { style: 'padding: 0.85rem' }, content: { style: 'padding: 0' } }"
+          >
+            <template #content>
+              <div class="flex align-items-center gap-2">
+                <div class="badge-icon surface-100 text-cyan-600 flex align-items-center justify-content-center flex-shrink-0">
+                  <i class="pi pi-plus-circle text-base"></i>
+                </div>
+                <div class="text-900 font-semibold text-sm">Create App</div>
+              </div>
+              <div class="text-500 text-xs line-height-3 mt-2">Describe the app you want to generate and use templates to scaffold a project.</div>
+            </template>
+          </Card>
         </div>
       </div>
-      <div class="detail-action">
-        <Button :label="selectedInfo.buttonText || 'Continue'" class="p-button-secondary" @click="goTo(selectedInfo.navPath || '/connectors')" />
-      </div>
+
+      <Card class="surface-card border-round-xl shadow-2 p-4 mt-4">
+        <template #content>
+          <div class="flex flex-column gap-4 lg:flex-row lg:align-items-center lg:justify-content-between">
+            <div class="flex align-items-center gap-3">
+              <div class="badge-icon surface-100 text-primary flex align-items-center justify-content-center">
+                <i :class="selectedInfo.icon + ' text-xl'"></i>
+              </div>
+              <div>
+                <div class="text-900 font-semibold text-xl">{{ selectedInfo.title }}</div>
+                <div class="text-500 text-sm">{{ selectedInfo.description }}</div>
+              </div>
+            </div>
+            <Button :label="selectedInfo.buttonText || 'Continue'" class="p-button-secondary p-button-sm" @click="goTo(selectedInfo.navPath || '/connectors')" />
+          </div>
+
+          <div class="grid gap-3 mt-4">
+            <div v-for="(step, index) in selectedInfo.steps" :key="index" class="col-12 surface-100 border-round-lg p-4 shadow-1">
+              <div class="flex align-items-center gap-3">
+                <div class="step-badge surface-card text-primary flex align-items-center justify-content-center">{{ index + 1 }}</div>
+                <div class="flex flex-column gap-1">
+                  <div class="text-900 font-semibold">{{ step.title }}</div>
+                  <div class="text-500 text-sm">{{ step.text }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </Card>
     </div>
   </div>
 </template>
@@ -110,87 +159,28 @@ function selectSection(section) {
 <style scoped>
 .create-app-guide {
   max-width: 1100px;
-  margin: 8px auto;
+  margin: 0 auto;
 }
-.subtitle {
-  color: #64748b;
-  margin-bottom: 18px;
-}
-.guide-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+.badge-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 }
 .guide-card {
-  padding: 16px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100px;
+  width: 100%;
+  box-sizing: border-box;
 }
-.guide-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
-}
-.guide-card.active {
-  border: 1px solid #4f46e5;
-  box-shadow: 0 16px 36px rgba(79, 70, 229, 0.16);
-}
-.card-title {
-  display:flex;
-  gap:8px;
-  align-items:center;
-  font-weight:600;
-}
-.detail-card {
-  padding: 24px;
-  border-radius: 18px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
-}
-.detail-title {
+.guide-card :deep(.p-card-body) {
+  height: 100%;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 14px;
-}
-.detail-description {
-  color: #475569;
-  margin-bottom: 20px;
-}
-.detail-steps {
-  display: grid;
-  gap: 14px;
-}
-.step-item {
-  display: grid;
-  grid-template-columns: 40px 1fr;
-  gap: 16px;
-  align-items: start;
-}
-.step-number {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  border-radius: 999px;
-  background: #eef2ff;
-  color: #4338ca;
+}
+.step-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
   font-weight: 700;
-}
-.step-label {
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-.step-text {
-  color: #64748b;
-  margin: 0;
-}
-.detail-action {
-  margin-top: 24px;
-  display: flex;
-  justify-content: flex-end;
 }
 </style>
