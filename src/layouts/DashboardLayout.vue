@@ -353,16 +353,58 @@ function logout() {
   color: #ffffff !important;
 }
 
+.mobile-toolbar {
+  display: none;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-radius: 0 !important;
+  padding: 0.75rem 1rem;
+  background: #fff !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.07) !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mobile-drawer {
+  width: 85vw;
+  max-width: 280px;
+}
+
+@media (max-width: 1024px) {
+  .sidebar.desktop-sidebar {
+    display: none;
+  }
+
+  .mobile-toolbar {
+    display: flex;
+  }
+
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .content-col {
+    width: 100%;
+  }
+
+  .main-content {
+    padding: 22px 18px;
+  }
+}
+
+@media (max-width: 640px) {
+  .main-content {
+    padding: 16px 14px;
+  }
+}
+
 .main-content {
   flex: 1;
   height: 100vh;
   overflow-y: auto;
-  padding: 28px 32px;
-  min-width: 0;
-  background: var(--p-content-background);
-}
-
-@media (max-width: 400px) {
+  padding: 28pi 32px;
   .main-content { padding: 12px; }
 }
 </style>
