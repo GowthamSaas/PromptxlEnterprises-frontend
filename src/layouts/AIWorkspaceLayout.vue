@@ -23,8 +23,6 @@ import AITopNavbar from '../components/common/AITopNavbar.vue'
 }
 
 .workspace-header {
-  position: sticky;
-  top: 0;
   z-index: 10;
   background: #f8fafc;
   border-bottom: 1px solid #e2e8f0;

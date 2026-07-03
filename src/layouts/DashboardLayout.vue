@@ -233,6 +233,7 @@ function logout() {
   overflow-y: auto;
   padding: 28px 32px;
   min-width: 0;
+  background: var(--p-content-background);
 }
 
 @media (max-width: 900px) {

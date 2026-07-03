@@ -110,8 +110,8 @@ const router = createRouter({
               path: 'createapp',
               name: 'CreateApp',
               component: () => import('../views/ai_workspace/CreateAppView.vue')
-            }
-            ,
+            },
+            
             {
               path: 'guide',
               name: 'CreateAppGuide',
