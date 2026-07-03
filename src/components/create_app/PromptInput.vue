@@ -6,10 +6,29 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import Textarea from 'primevue/textarea'
 
-const value = ref('')
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: ''
+  }
+})
+const emit = defineEmits(['update:modelValue'])
+
+const value = ref(props.modelValue)
+
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    value.value = newValue
+  }
+)
+
+watch(value, (newValue) => {
+  emit('update:modelValue', newValue)
+})
 </script>
 
 <style scoped>
