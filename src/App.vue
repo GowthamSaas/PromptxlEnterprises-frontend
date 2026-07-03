@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <Toast />
+    <Toast :breakpoints="{'920px': {width: '100%', right: '0', left: '0'}}" />
     <ConfirmDialog />
     <router-view />
   </div>

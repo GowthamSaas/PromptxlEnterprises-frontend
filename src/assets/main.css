@@ -16,6 +16,19 @@ body {
   color: var(--text-primary);
 }
 
+/* Prevent accidental horizontal overflow on small screens */
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Ensure images and SVGs scale to container */
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
 /* ─────────────────────────────────────────────
    DESIGN TOKENS
 ───────────────────────────────────────────── */
@@ -521,7 +534,7 @@ body {
 /* ─────────────────────────────────────────────
    SUPER-ADMIN — SHARED PANEL & PAGE
 ───────────────────────────────────────────── */
-.sa-page { padding: 32px; }
+.sa-page { padding: 32px; width: 100%; box-sizing: border-box; min-width: 0; }
 
 .sa-panel {
   background: #fff;
@@ -529,6 +542,8 @@ body {
   box-shadow: 0 2px 16px rgba(15,23,42,.07);
   border: 1px solid rgba(15,23,42,.06);
   padding: 30px;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .sa-panel-header {
@@ -579,6 +594,22 @@ body {
   border-radius: 50%;
   background: rgba(255,255,255,.06);
   pointer-events: none;
+}
+
+/* Prevent the hero orb from causing horizontal overflow on small screens */
+@media (max-width: 640px) {
+  .sa-hero-orb {
+    display: none;
+  }
+
+  .sa-hero {
+    padding: 18px 14px;
+    border-radius: 12px;
+  }
+
+  .sa-hero-title {
+    font-size: 1.4rem;
+  }
 }
 
 .sa-hero-content { position: relative; z-index: 1; }
@@ -695,7 +726,7 @@ body {
 ───────────────────────────────────────────── */
 .sa-stats-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
   gap: 20px;
   margin-bottom: 28px;
 }
@@ -709,6 +740,8 @@ body {
   border-radius: 18px;
   box-shadow: 0 2px 16px rgba(15,23,42,.07);
   border: 1px solid rgba(15,23,42,.06);
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .sa-stat-icon {
@@ -729,7 +762,7 @@ body {
 .sa-stat-icon--emerald { background: #f0fdf4; }
 .sa-stat-icon--emerald .pi { color: #10b981; }
 
-.sa-stat-body { flex: 1; display: flex; flex-direction: column; }
+.sa-stat-body { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .sa-stat-value { font-size: 1.85rem; font-weight: 800; color: #111827; line-height: 1; }
 .sa-stat-label { font-size: .8rem; font-weight: 500; color: var(--clr-text-muted); margin-top: 4px; }
 .sa-stat-trend { font-size: 1rem; }
@@ -740,7 +773,7 @@ body {
 ───────────────────────────────────────────── */
 .sa-action-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   gap: 20px;
 }
 
@@ -753,6 +786,8 @@ body {
   cursor: pointer;
   transition: transform .18s ease, box-shadow .18s ease;
   border: 1px solid transparent;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .sa-action-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(15,23,42,.1); }
@@ -780,6 +815,155 @@ body {
 .sa-action-body h3 { font-size: 1rem; font-weight: 700; color: #111827; margin: 0 0 6px; }
 .sa-action-body p { font-size: .82rem; color: var(--clr-text-muted); margin: 0; line-height: 1.5; }
 .sa-action-btn { width: 100%; justify-content: center; }
+
+/* ─────────────────────────────────────────────
+   SUPER-ADMIN — GLOBAL RESPONSIVE
+───────────────────────────────────────────── */
+
+/* Tablet ≤ 1024px */
+@media (max-width: 1024px) {
+  .sa-page { padding: 24px; }
+}
+
+/* Large phone ≤ 768px */
+@media (max-width: 768px) {
+  .sa-page { padding: 16px; }
+
+  /* Stat cards: 2 column */
+  .sa-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .sa-hero {
+    padding: 24px 22px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+
+  .sa-hero-title { font-size: 1.65rem; }
+  .sa-hero-sub   { font-size: .9rem; }
+
+  .sa-page-title { font-size: 1.45rem; }
+  .sa-page-header { margin-bottom: 20px; }
+
+  .sa-panel { padding: 20px 18px; border-radius: 16px; }
+  .sa-panel-header { padding: 0 0 12px; }
+
+  .sa-action-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Field row collapses */
+  .sa-field-row { grid-template-columns: 1fr; gap: 14px; }
+
+  /* Dialog modal near-full width */
+  .p-dialog { width: 92vw !important; margin: 0 auto; }
+}
+
+/* Phone ≤ 540px */
+@media (max-width: 540px) {
+  .sa-page { padding: 12px; }
+
+  .sa-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .sa-stat-card { padding: 16px 14px; gap: 12px; border-radius: 14px; }
+  .sa-stat-icon { width: 42px; height: 42px; border-radius: 11px; }
+  .sa-stat-value { font-size: 1.5rem; }
+
+  .sa-hero { padding: 18px 16px; border-radius: 12px; }
+  .sa-hero-orb { display: none; }
+  .sa-hero-title { font-size: 1.35rem; }
+  .sa-hero-sub { font-size: .82rem; }
+  .sa-hero-eyebrow { font-size: .7rem; padding: 4px 10px; }
+
+  .sa-page-title { font-size: 1.25rem; }
+
+  .sa-panel { padding: 16px 14px; border-radius: 14px; }
+
+  .sa-data-table .p-datatable-thead > tr > th { padding: 10px 12px; }
+  .sa-data-table .p-datatable-tbody > tr > td { padding: 10px 8px; }
+
+  .sa-form-actions { flex-wrap: wrap; }
+
+  /* Dialog near-full width */
+  .p-dialog { width: 96vw !important; }
+  .p-dialog-header { padding: 1.25rem 1.25rem !important; }
+  .p-dialog-content { padding: 1.5rem 1.25rem !important; }
+  .p-dialog-footer { padding: 1rem 1.25rem !important; }
+}
+
+/* Very small phone ≤ 400px */
+@media (max-width: 400px) {
+  .sa-page { padding: 8px; }
+
+  .sa-stats-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .sa-stat-card { padding: 14px 12px; }
+
+  .sa-hero { padding: 16px 12px; }
+  .sa-hero-title { font-size: 1.15rem; }
+
+  .sa-form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sa-form-actions > * { width: 100% !important; }
+}
+
+/* ─────────────────────────────────────────────
+   SUPER-ADMIN — DRAWER OVERRIDES
+───────────────────────────────────────────── */
+.sa-dark-drawer {
+  background: linear-gradient(175deg, #1e1b4b 0%, #312e81 55%, #4338ca 100%) !important;
+  color: #fff;
+  border-right: none;
+}
+
+.sa-dark-drawer .p-drawer-content {
+  padding: 0 16px 24px !important;
+  display: flex !important;
+  flex-direction: column;
+}
+
+/* Hide the default header entirely if we use a custom one, or style the wrapper */
+.sa-dark-drawer .p-drawer-header {
+  background: transparent !important;
+  border: none !important;
+  padding: 12px 16px 0 !important;
+  color: #fff;
+  justify-content: flex-end;
+}
+
+.sa-drawer-header-custom {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.sa-drawer-close {
+  color: #a5b4fc !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+}
+
+.sa-drawer-close:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+/* Hide PrimeVue default close button because we replaced it */
+.sa-dark-drawer .p-drawer-header .p-drawer-close-button {
+  display: none !important;
+}
 
 /* ─────────────────────────────────────────────
    PRIMEVUE — DIALOG (MODALS)
@@ -1152,6 +1336,11 @@ body {
 /* ─────────────────────────────────────────────
    RESPONSIVE
 ───────────────────────────────────────────── */
+/* Ensure PrimeVue Toast is responsive on mobile screens */
+.p-toast {
+  max-width: 90vw !important;
+}
+
 @media (max-width: 960px) {
   .sa-form-grid { grid-template-columns: 1fr; }
   .dashboard-hero { grid-template-columns: 1fr; }
