@@ -9,6 +9,7 @@
       <Button
         v-if="showGuideButton"
         label="Guide"
+        icon="pi pi-book"
         :outlined="!isGuideActive"
         :class="{ active: isGuideActive }"
         size="small"
@@ -16,6 +17,7 @@
       />
       <Button
         label="Connectors"
+        icon="pi pi-sitemap"
         :outlined="!isConnectorsActive"
         :class="{ active: isConnectorsActive }"
         size="small"
@@ -23,6 +25,7 @@
       />
       <Button
         label="LLM Providers"
+        icon="pi pi-cog"
         :outlined="!isLLMProvidersActive"
         :class="{ active: isLLMProvidersActive }"
         size="small"
@@ -30,6 +33,7 @@
       />
       <Button
         label="Create App"
+        icon="pi pi-plus-circle"
         :outlined="!isCreateAppActive"
         :class="{ active: isCreateAppActive }"
         size="small"
