@@ -46,16 +46,16 @@
           toggleMask
           :feedback="false"
           fluid
-          :disabled="loading"
+          :disabled="localLoading"
         />
       </IconField>
 
       <!-- Connect Button -->
       <Button
-        :label="loading ? 'Validating...' : 'Connect GitHub'"
-        :icon="loading ? '' : 'pi pi-github'"
-        :loading="loading"
-        :disabled="loading"
+        :label="localLoading ? 'Validating...' : 'Connect GitHub'"
+        :icon="localLoading ? '' : 'pi pi-github'"
+        :loading="localLoading"
+        :disabled="localLoading"
         fluid
         @click="connect"
       />
@@ -97,7 +97,9 @@
           label="Get API Key"
           icon="pi pi-external-link"
           link
-          style="margin-top:12px"
+          as="a"
+  href="https://github.com/"
+  target="_blank"
         />
 
       </Panel>
@@ -244,7 +246,7 @@ const token = ref('')
 const connectorStore = useConnectorStore()
 const toast = useToast()
 
-const loading = computed(() => connectorStore.loading)
+const localLoading = ref(false)
 
 const isConnected = computed(() => {
   return connectorStore.connectors.github.connected
@@ -273,29 +275,51 @@ async function connect() {
     return
   }
 
-  await connectorStore.connectConnector({
-    provider: 'github'
-  })
+  localLoading.value = true
 
-  toast.add({
-    severity: 'success',
-    summary: 'Connected',
-    detail: 'GitHub connected successfully.',
-    life: 3000
-  })
+  try {
+    await connectorStore.connectConnector({
+      provider: 'github',
+      token: token.value
+    })
+
+    toast.add({
+      severity: 'success',
+      summary: 'Connected',
+      detail: 'GitHub connected successfully.',
+      life: 3000
+    })
+  }
+  catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Connection failed',
+      detail: error?.response?.data?.detail || error?.message || 'Unable to connect GitHub.',
+      life: 4000
+    })
+  }
+  finally {
+    localLoading.value = false
+  }
 }
 
 async function disconnect() {
+  localLoading.value = true
 
-  await connectorStore.disconnectConnector('github')
+  try {
+    await connectorStore.disconnectConnector('github')
 
-  token.value = ''
+    token.value = ''
 
-  toast.add({
-    severity: 'success',
-    summary: 'Disconnected',
-    detail: 'GitHub disconnected successfully.',
-    life: 3000
-  })
+    toast.add({
+      severity: 'success',
+      summary: 'Disconnected',
+      detail: 'GitHub disconnected successfully.',
+      life: 3000
+    })
+  }
+  finally {
+    localLoading.value = false
+  }
 }
 </script>

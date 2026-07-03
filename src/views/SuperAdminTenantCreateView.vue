@@ -370,6 +370,7 @@ async function handleSubmit() {
 /* Page-specific overrides */
 .sa-page { max-width: 1200px; }
 
+/* ── 2-column form grid ── */
 .sa-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -406,5 +407,38 @@ async function handleSubmit() {
 :deep(.sa-password .p-password-panel .p-password-prompt) {
   display: none !important;
 }
+
+/* ── Tablet (≤ 900px): stack form panels ── */
+@media (max-width: 900px) {
+  .sa-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Phone (≤ 640px): collapse field rows ── */
+@media (max-width: 640px) {
+  .sa-page {
+    max-width: 100%;
+  }
+
+  /* email+phone side-by-side → single column */
+  :deep(.sa-field-row) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Small phone (≤ 480px): stack action buttons ── */
+@media (max-width: 480px) {
+  .sa-form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sa-form-actions :deep(.p-button) {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
 </style>
+
 

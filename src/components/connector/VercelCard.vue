@@ -45,17 +45,17 @@
           toggleMask
           :feedback="false"
           fluid
-          :disabled="loading"
+          :disabled="localLoading"
         />
       </IconField>
 
       <!-- Button -->
       <Button
-        :label="loading ? 'Validating...' : 'Connect Vercel'"
-        :icon="loading ? '' : 'pi pi-check-circle'"
-        :loading="loading"
+        :label="localLoading ? 'Validating...' : 'Connect Vercel'"
+        :icon="localLoading ? '' : 'pi pi-check-circle'"
+        :loading="localLoading"
         fluid
-        :disabled="loading"
+        :disabled="localLoading"
         @click="connect"
       />
 
@@ -156,7 +156,7 @@
         icon="pi pi-trash"
         text
         severity="danger"
-        :loading="loading"
+        :loading="localLoading"
         @click="disconnect"
       />
 
@@ -235,8 +235,7 @@ const connectorStore = useConnectorStore()
 
 const toast = useToast()
 
-const loading = computed(() => connectorStore.loading)
-
+const localLoading = ref(false)
 
 const isConnected = computed(() => {
   return connectorStore.connectors.vercel.connected
@@ -264,16 +263,32 @@ async function connect() {
     return
   }
 
-  await connectorStore.connectConnector({
-    provider: 'vercel'
-  })
+  localLoading.value = true
 
-  toast.add({
-    severity: 'success',
-    summary: 'Connected',
-    detail: 'Vercel connected successfully.',
-    life: 3000
-  })
+  try {
+    await connectorStore.connectConnector({
+      provider: 'vercel',
+      token: token.value
+    })
+
+    toast.add({
+      severity: 'success',
+      summary: 'Connected',
+      detail: 'Vercel connected successfully.',
+      life: 3000
+    })
+  }
+  catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Connection failed',
+      detail: error?.response?.data?.detail || error?.message || 'Unable to connect Vercel.',
+      life: 4000
+    })
+  }
+  finally {
+    localLoading.value = false
+  }
 }
 
 async function disconnect() {

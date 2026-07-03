@@ -1,33 +1,26 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+import { connectorAPI } from '../services/connector'
+
 export const useConnectorStore = defineStore('connector', () => {
 
   const loading = ref(false)
 
   const connectors = ref({
 
-    // -----------------------
-    // Vercel
-    // -----------------------
     vercel: {
       connected: false,
       account: '',
       teams: 0
     },
 
-    // -----------------------
-    // GitHub
-    // -----------------------
     github: {
       connected: false,
       account: '',
       repositories: 0
     },
 
-    // -----------------------
-    // Supabase
-    // -----------------------
     supabase: {
       connected: false,
       project: '',
@@ -36,72 +29,19 @@ export const useConnectorStore = defineStore('connector', () => {
 
   })
 
+  // ==========================================
+  // Fetch Connectors
+  // ==========================================
+
   async function fetchConnectors() {
-    // Dummy
-    return
-  }
-
-  async function connectConnector(payload) {
 
     loading.value = true
 
-    // Dummy Validation Delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    try {
 
-    // -----------------------
-    // Vercel
-    // -----------------------
-    if (payload.provider === 'vercel') {
+      const { data } = await connectorAPI.list()
 
-      connectors.value.vercel = {
-        connected: true,
-        account: 'Connected Account',
-        teams: 1
-      }
-
-    }
-
-    // -----------------------
-    // GitHub
-    // -----------------------
-    if (payload.provider === 'github') {
-
-      connectors.value.github = {
-        connected: true,
-        account: 'Connected Account',
-        repositories: 8
-      }
-
-    }
-
-    // -----------------------
-    // Supabase
-    // -----------------------
-    if (payload.provider === 'supabase') {
-
-      connectors.value.supabase = {
-        connected: true,
-        project: 'Connected Project',
-        tables: 12
-      }
-
-    }
-
-    loading.value = false
-
-    return true
-  }
-
-  async function disconnectConnector(provider) {
-
-    loading.value = true
-
-    await new Promise(resolve => setTimeout(resolve, 600))
-
-    // -----------------------
-    // Vercel
-    // -----------------------
-    if (provider === 'vercel') {
+      // reset
 
       connectors.value.vercel = {
         connected: false,
@@ -109,25 +49,11 @@ export const useConnectorStore = defineStore('connector', () => {
         teams: 0
       }
 
-    }
-
-    // -----------------------
-    // GitHub
-    // -----------------------
-    if (provider === 'github') {
-
       connectors.value.github = {
         connected: false,
         account: '',
         repositories: 0
       }
-
-    }
-
-    // -----------------------
-    // Supabase
-    // -----------------------
-    if (provider === 'supabase') {
 
       connectors.value.supabase = {
         connected: false,
@@ -135,19 +61,114 @@ export const useConnectorStore = defineStore('connector', () => {
         tables: 0
       }
 
+      data.connectors.forEach(item => {
+
+        if (item.provider === 'vercel') {
+
+          connectors.value.vercel = {
+            connected: item.connected,
+            account: item.account_name,
+            teams: item.metadata?.teams || 0
+          }
+
+        }
+
+        if (item.provider === 'github') {
+
+          connectors.value.github = {
+            connected: item.connected,
+            account: item.account_name,
+            repositories: item.metadata?.repositories || 0
+          }
+
+        }
+
+        if (item.provider === 'supabase') {
+
+          connectors.value.supabase = {
+            connected: item.connected,
+            project: item.account_name,
+            tables: item.metadata?.tables || 0
+          }
+
+        }
+
+      })
+
     }
 
-    loading.value = false
+    finally {
 
-    return true
+      loading.value = false
+
+    }
+
+  }
+
+  // ==========================================
+  // Connect
+  // ==========================================
+
+  async function connectConnector(payload) {
+
+    loading.value = true
+
+    try {
+
+      await connectorAPI.connect(payload)
+
+      await fetchConnectors()
+
+      return true
+
+    }
+
+    finally {
+
+      loading.value = false
+
+    }
+
+  }
+
+  // ==========================================
+  // Disconnect
+  // ==========================================
+
+  async function disconnectConnector(provider) {
+
+    loading.value = true
+
+    try {
+
+      await connectorAPI.disconnect(provider)
+
+      await fetchConnectors()
+
+      return true
+
+    }
+
+    finally {
+
+      loading.value = false
+
+    }
+
   }
 
   return {
+
     connectors,
+
     loading,
+
     fetchConnectors,
+
     connectConnector,
+
     disconnectConnector
+
   }
 
 })

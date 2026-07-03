@@ -300,21 +300,23 @@ onMounted(loadTenants)
 
 .sa-panel { overflow: hidden; padding: 0; }
 
+/* ── Toolbar ── */
 .sa-table-toolbar {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 20px 24px;
+  padding: 16px 20px;
   border-bottom: 1px solid #f1f5f9;
+  flex-wrap: wrap;
 }
 
-.sa-search-field { flex: 1; max-width: 360px; }
+.sa-search-field { flex: 1; min-width: 180px; max-width: 360px; }
 .sa-search-input { width: 100%; }
 
-/* Skeleton loader */
+/* ── Skeleton loader ── */
 .sa-skeleton-list { padding: 20px 24px; display: flex; flex-direction: column; gap: 12px; }
 
-/* Empty state */
+/* ── Empty state ── */
 .sa-empty {
   display: flex;
   flex-direction: column;
@@ -336,7 +338,7 @@ onMounted(loadTenants)
 .sa-empty h3 { font-size: 1.1rem; font-weight: 700; color: #1e293b; margin: 0; }
 .sa-empty p  { font-size: .88rem; color: #64748b; margin: 0; }
 
-/* Company column */
+/* ── Company column ── */
 .sa-col-company { display: flex; align-items: center; gap: 12px; }
 
 .sa-company-avatar {
@@ -352,14 +354,16 @@ onMounted(loadTenants)
 .sa-company-name { display: block; font-weight: 600; color: #111827; font-size: .9rem; }
 .sa-company-id   { display: block; font-size: .75rem; color: #94a3b8; font-family: 'Courier New', monospace; margin-top: 2px; }
 
-/* Email / Phone / Address */
+/* ── Email / Phone / Address ── */
 .sa-email-link {
   display: flex; align-items: center; gap: 6px;
   color: #4f46e5; text-decoration: none; font-weight: 500;
+  word-break: break-word;
 }
 .sa-email-link:hover { text-decoration: underline; }
 .sa-phone, .sa-address { color: #374151; }
 
+/* ── Status cell ── */
 .sa-status-cell {
   display: flex;
   justify-content: left;
@@ -385,19 +389,14 @@ onMounted(loadTenants)
   font-size: 1rem;
 }
 
-/* .sa-action-buttons {
+/* ── Action buttons ── */
+.sa-action-buttons {
   display: flex;
-  justify-content: center;
-  gap: 0px;
-} */
- .sa-action-buttons {
-  display: flex;
-  justify-content: flex-start;   /* center → flex-start */
+  justify-content: flex-start;
   gap: 0px;
   width: 100%;
 }
 
-/* Circular icon-only action buttons (view / edit / delete) */
 .sa-action-buttons button.sa-table-action {
   height: 36px;
   width: 36px;
@@ -418,35 +417,20 @@ onMounted(loadTenants)
   transform: translateY(-1px);
 }
 
-.sa-action-buttons button.sa-table-action:focus {
-  outline: none;
-}
-
+.sa-action-buttons button.sa-table-action:focus { outline: none; }
 .sa-action-buttons button.sa-table-action:focus-visible {
   outline: 2px solid rgba(59,130,246,0.35);
   outline-offset: 2px;
 }
 
-.sa-action-buttons button.sa-table-action .pi {
-  font-size: 1.05rem;
-  line-height: 1;
-}
-
-.sa-action-buttons button.sa-table-action .pi.pi-eye { color: #3b82f6; }
+.sa-action-buttons button.sa-table-action .pi { font-size: 1.05rem; line-height: 1; }
+.sa-action-buttons button.sa-table-action .pi.pi-eye    { color: #3b82f6; }
 .sa-action-buttons button.sa-table-action .pi.pi-pencil { color: #7c3aed; }
-.sa-action-buttons button.sa-table-action .pi.pi-trash { color: #ef4444; }
+.sa-action-buttons button.sa-table-action .pi.pi-trash  { color: #ef4444; }
 
-.sa-edit-form {
-  display: grid;
-  gap: 16px;
-}
-
-.sa-edit-form .field label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: #334155;
-}
+/* ── Edit / view forms ── */
+.sa-edit-form { display: grid; gap: 16px; }
+.sa-edit-form .field label { display: block; margin-bottom: 6px; font-weight: 600; color: #334155; }
 
 .sa-tenant-detail-grid {
   display: grid;
@@ -455,9 +439,49 @@ onMounted(loadTenants)
   padding: 16px 0;
 }
 
-.sa-detail-label {
-  font-weight: 700;
-  color: #334155;
+.sa-detail-label { font-weight: 700; color: #334155; }
+
+/* ── DataTable scroll wrapper on small screens ── */
+:deep(.sa-data-table) {
+  overflow-x: auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sa-table-toolbar {
+    padding: 12px 14px;
+  }
+
+  .sa-search-field {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  /* Hide less important columns on tablet */
+  :deep(.sa-data-table .p-datatable-thead > tr > th:nth-child(4)),
+  :deep(.sa-data-table .p-datatable-tbody > tr > td:nth-child(4)) {
+    display: none;
+  }
+}
+
+@media (max-width: 540px) {
+  .sa-empty { padding: 40px 16px; }
+
+  .sa-tenant-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 4px 0;
+  }
+
+  .sa-detail-label { border-top: 1px solid #f1f5f9; padding-top: 8px; margin-top: 4px; }
+  .sa-detail-label:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+
+  /* Hide phone & address columns on small phones */
+  :deep(.sa-data-table .p-datatable-thead > tr > th:nth-child(3)),
+  :deep(.sa-data-table .p-datatable-tbody > tr > td:nth-child(3)),
+  :deep(.sa-data-table .p-datatable-thead > tr > th:nth-child(4)),
+  :deep(.sa-data-table .p-datatable-tbody > tr > td:nth-child(4)) {
+    display: none;
+  }
 }
 </style>
 
