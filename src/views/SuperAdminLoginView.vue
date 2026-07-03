@@ -271,6 +271,20 @@ async function handleLogin() {
   }
 }
 
+@media (max-width: 380px) {
+  .superadmin-login-card :deep(.p-card-body) {
+    padding: 24px 16px !important;
+  }
+
+  .header-section h1 {
+    font-size: 1.5rem;
+  }
+
+  .superadmin-login-wrapper {
+    padding: 12px;
+  }
+}
+
 .input-wrapper{
     position:relative;
 }

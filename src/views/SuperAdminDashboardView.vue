@@ -168,37 +168,52 @@ onMounted(init)
   margin: 0 auto;
 }
 
+/* ── Clickable stat cards ── */
+.sa-stat-card--clickable {
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.sa-stat-card--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(15,23,42,.12);
+}
+
+/* ── Tablet (≤ 900px) ── */
 @media (max-width: 900px) {
   .sa-page {
     max-width: 100%;
-    width: 100%;
-  }
-
-  .sa-hero,
-  .sa-panel,
-  .sa-action-card,
-  .sa-stat-card {
-    width: 100%;
   }
 }
 
-.sa-stat-card--clickable {
-  cursor: pointer;
-}
-
-.sa-stat-card--clickable:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(15,23,42,.1);
-}
-
+/* ── Large phone (≤ 640px) ── */
 @media (max-width: 640px) {
-  .sa-hero {
-    padding: 24px 18px;
+  .sa-page {
+    max-width: 100%;
+  }
+
+  /* Stat cards: single column */
+  :deep(.sa-stats-row) {
+    grid-template-columns: 1fr 1fr;
   }
 
   .sa-action-top {
     flex-direction: column;
     gap: 14px;
+  }
+
+  .sa-action-btn {
+    width: 100%;
+  }
+}
+
+/* ── Small phone (≤ 480px) ── */
+@media (max-width: 480px) {
+  :deep(.sa-stats-row) {
+    grid-template-columns: 1fr;
+  }
+
+  :deep(.sa-action-grid) {
+    grid-template-columns: 1fr;
   }
 }
 </style>
