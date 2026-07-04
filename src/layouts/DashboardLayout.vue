@@ -200,6 +200,7 @@ function logout() {
   background: linear-gradient(175deg, #1e1b4b 0%, #312e81 55%, #4338ca 100%);
   color: #eff6ff;
   box-shadow: 4px 0 24px rgba(15, 23, 42, 0.18);
+  border-radius: 0%;
 }
 
 /* ── Right column (grows to fill remaining width) ── */

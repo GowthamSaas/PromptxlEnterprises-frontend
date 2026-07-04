@@ -98,30 +98,48 @@
         <form @submit.prevent="handleLogin" class="login-form">
 
           <!-- Email -->
-          <div class="field-wrapper">
+            <div class="field-wrapper">
             <i class="pi pi-envelope field-icon"></i>
+
             <InputText
               v-model="email"
               type="email"
               placeholder="Email address"
               fluid
               class="custom-input"
+              :class="{ 'p-invalid': emailError }"
             />
+
+            <small
+              v-if="emailError"
+              class="p-error validation-error"
+            >
+              {{ emailError }}
+            </small>
           </div>
 
           <!-- Password -->
           <div class="field-wrapper">
-            <i class="pi pi-lock field-icon"></i>
-            <Password
-              v-model="password"
-              placeholder="Password"
-              :feedback="false"
-              toggleMask
-              fluid
-              class="custom-password"
-              inputClass="custom-password-input"
-            />
-          </div>
+          <i class="pi pi-lock field-icon"></i>
+
+          <Password
+            v-model="password"
+            placeholder="Password"
+            :feedback="false"
+            toggleMask
+            fluid
+            class="custom-password"
+            inputClass="custom-password-input"
+            :class="{ 'p-invalid': passwordError }"
+          />
+
+          <small
+            v-if="passwordError"
+            class="p-error validation-error"
+          >
+            {{ passwordError }}
+          </small>
+        </div>
 
           <Button
             type="submit"
@@ -158,16 +176,84 @@ const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
+const emailError = ref('')
+const passwordError = ref('')
 
 async function handleLogin() {
+
+  // Email Required
+  if (!email.value.trim()) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Validation',
+      detail: 'Email is required',
+      life: 3000
+    })
+    return
+  }
+
+  // Email Format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  if (!emailRegex.test(email.value)) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Validation',
+      detail: 'Enter a valid email address',
+      life: 3000
+    })
+    return
+  }
+
+  // Password Required
+  if (!password.value.trim()) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Validation',
+      detail: 'Password is required',
+      life: 3000
+    })
+    return
+  }
+
+  // Password Length
+  if (password.value.length < 6) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Validation',
+      detail: 'Password must be at least 6 characters',
+      life: 3000
+    })
+    return
+  }
+
   loading.value = true
+
   try {
-    await authStore.login({ email: email.value, password: password.value })
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Welcome back!', life: 3000 })
+    await authStore.login({
+      email: email.value,
+      password: password.value
+    })
+
+    toast.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Welcome back!',
+      life: 3000
+    })
+
     router.push('/')
+
   } catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error.response?.data?.detail || 'Login failed', life: 3000 })
-  } finally {
+  toast.add({
+    severity: 'error',
+    summary: 'Login Failed',
+    detail:
+      error.response?.data?.detail ||
+      'Invalid email or password',
+    life: 3000
+  })
+} finally {
     loading.value = false
   }
 }
@@ -440,6 +526,12 @@ function handleGoogleSignIn() {
   right: 14px;
   color: #94a3b8;
 }
+.validation-error {
+  display: block;
+  margin-top: 6px;
+  margin-left: 4px;
+  font-size: 0.8rem;
+}
 
 /* ─────────────────────────────────────────────
    ANIMATIONS
@@ -539,4 +631,3 @@ function handleGoogleSignIn() {
   50%      { transform: translateY(-12px) rotate(8deg); }
 }
 </style>
-e>
