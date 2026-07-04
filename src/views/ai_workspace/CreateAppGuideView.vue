@@ -1,94 +1,108 @@
 <template>
-  <div class="create-app-guide surface-0 p-4">
+  <div class="surface-0 p-4">
     <div class="flex flex-column gap-4">
       <div class="flex flex-column gap-2">
         <h2 class="text-3xl font-bold text-900">Create Custom App — Quick Guide</h2>
         <p class="text-600 text-base">Follow these steps to connect services, add LLM providers, and scaffold your app.</p>
       </div>
 
-      <div class="flex gap-3 w-full">
-        <div class="flex-1 min-w-0">
-          <Card
-            class="surface-card border-round-xl shadow-2 guide-card transition-duration-200 hover:shadow-4 cursor-pointer"
-            :class="{ 'border-primary': selectedSection === 'connectors' }"
-            @click="selectSection('connectors')"
-            :pt="{ body: { style: 'padding: 0.85rem' }, content: { style: 'padding: 0' } }"
-          >
-            <template #content>
-              <div class="flex align-items-center gap-2">
-                <div class="badge-icon surface-100 text-primary flex align-items-center justify-content-center flex-shrink-0">
-                  <i class="pi pi-sitemap text-base"></i>
-                </div>
-                <div class="text-900 font-semibold text-sm">Connectors</div>
-              </div>
-              <div class="text-500 text-xs line-height-3 mt-2">Link external services (Supabase, GitHub, Vercel) to enable deployment and storage.</div>
-            </template>
-          </Card>
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+        <Card
+          class="cursor-pointer"
+          @click="selectSection('connectors')"
+          :pt="{ 
+            root: { class: 'hover:shadow-2 transition-all duration-300' },
+            body: { class: 'p-3' },
+            content: { class: 'p-0' } 
+          }"
+        >
+          <template #content>
+            <div class="flex flex-column align-items-center justify-content-center gap-1 text-center">
+              <i class="pi pi-sitemap text-xl" style="color: #00b894;"></i>
+              <div class="text-900 font-semibold text-xs">Connector</div>
+              <div class="text-500 text-xs" style="font-size: 0.75rem;">Connect external services</div>
+            </div>
+          </template>
+        </Card>
 
-        <div class="flex-1 min-w-0">
-          <Card
-            class="surface-card border-round-xl shadow-2 guide-card transition-duration-200 hover:shadow-4 cursor-pointer"
-            :class="{ 'border-primary': selectedSection === 'llm' }"
-            @click="selectSection('llm')"
-            :pt="{ body: { style: 'padding: 0.85rem' }, content: { style: 'padding: 0' } }"
-          >
-            <template #content>
-              <div class="flex align-items-center gap-2">
-                <div class="badge-icon surface-100 text-purple-600 flex align-items-center justify-content-center flex-shrink-0">
-                  <i class="pi pi-cog text-base"></i>
-                </div>
-                <div class="text-900 font-semibold text-sm">LLM Providers</div>
-              </div>
-              <div class="text-500 text-xs line-height-3 mt-2">Connect your OpenAI / Anthropic / Google keys to allow generation and runtime calls.</div>
-            </template>
-          </Card>
-        </div>
+        <Card
+          class="cursor-pointer"
+          @click="selectSection('llm')"
+          :pt="{ 
+            root: { class: 'hover:shadow-2 transition-all duration-300' },
+            body: { class: 'p-3' },
+            content: { class: 'p-0' } 
+          }"
+        >
+          <template #content>
+            <div class="flex flex-column align-items-center justify-content-center gap-1 text-center">
+              <i class="pi pi-cog text-xl" style="color: #7c3aed;"></i>
+              <div class="text-900 font-semibold text-xs">LLM Provider</div>
+              <div class="text-500 text-xs" style="font-size: 0.75rem;">Add and manage LLM APIs</div>
+            </div>
+          </template>
+        </Card>
 
-        <div class="flex-1 min-w-0">
-          <Card
-            class="surface-card border-round-xl shadow-2 guide-card transition-duration-200 hover:shadow-4 cursor-pointer"
-            :class="{ 'border-primary': selectedSection === 'createApp' }"
-            @click="selectSection('createApp')"
-            :pt="{ body: { style: 'padding: 0.85rem' }, content: { style: 'padding: 0' } }"
-          >
-            <template #content>
-              <div class="flex align-items-center gap-2">
-                <div class="badge-icon surface-100 text-cyan-600 flex align-items-center justify-content-center flex-shrink-0">
-                  <i class="pi pi-plus-circle text-base"></i>
-                </div>
-                <div class="text-900 font-semibold text-sm">Create App</div>
-              </div>
-              <div class="text-500 text-xs line-height-3 mt-2">Describe the app you want to generate and use templates to scaffold a project.</div>
-            </template>
-          </Card>
-        </div>
+        <Card
+          class="cursor-pointer"
+          @click="selectSection('createApp')"
+          :pt="{ 
+            root: { class: 'hover:shadow-2 transition-all duration-300' },
+            body: { class: 'p-3' },
+            content: { class: 'p-0' } 
+          }"
+        >
+          <template #content>
+            <div class="flex flex-column align-items-center justify-content-center gap-1 text-center">
+              <i class="pi pi-plus-circle text-xl" style="color: #0891b2;"></i>
+              <div class="text-900 font-semibold text-xs">Create App</div>
+              <div class="text-500 text-xs" style="font-size: 0.75rem;">Scaffold and generate your app</div>
+            </div>
+          </template>
+        </Card>
       </div>
 
-      <Card class="surface-card border-round-xl shadow-2 p-4 mt-4">
+      <Card class="mt-3" :pt="{ body: { class: 'p-0' }, content: { class: 'p-0' } }" :style="{ backgroundColor: '#f3effc' }">
         <template #content>
-          <div class="flex flex-column gap-4 lg:flex-row lg:align-items-center lg:justify-content-between">
-            <div class="flex align-items-center gap-3">
-              <div class="badge-icon surface-100 text-primary flex align-items-center justify-content-center">
-                <i :class="selectedInfo.icon + ' text-xl'"></i>
-              </div>
-              <div>
-                <div class="text-900 font-semibold text-xl">{{ selectedInfo.title }}</div>
-                <div class="text-500 text-sm">{{ selectedInfo.description }}</div>
-              </div>
+          <div class="flex align-items-center gap-3 p-4" style="border-bottom: 1px solid #e9ecef;">
+            <div style="width: 50px; height: 50px; min-width: 50px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(124, 58, 237, 0.15); color: #7c3aed; font-size: 1.5rem;">
+              <i :class="selectedInfo.icon"></i>
             </div>
-            <Button :label="selectedInfo.buttonText || 'Continue'" class="p-button-secondary p-button-sm" @click="goTo(selectedInfo.navPath || '/connectors')" />
+            <div class="flex-1">
+              <div class="text-900 font-bold text-xl">{{ selectedInfo.title }}</div>
+              <div class="text-500 text-sm mt-1">{{ selectedInfo.description }}</div>
+            </div>
           </div>
 
-          <div class="grid gap-3 mt-4">
-            <div v-for="(step, index) in selectedInfo.steps" :key="index" class="col-12 surface-100 border-round-lg p-4 shadow-1">
-              <div class="flex align-items-center gap-3">
-                <div class="step-badge surface-card text-primary flex align-items-center justify-content-center">{{ index + 1 }}</div>
-                <div class="flex flex-column gap-1">
-                  <div class="text-900 font-semibold">{{ step.title }}</div>
-                  <div class="text-500 text-sm">{{ step.text }}</div>
+          <div class="p-5">
+            <div v-for="(step, index) in selectedInfo.steps" :key="index" class="flex gap-4 mb-3">
+              <div class="flex flex-column align-items-center flex-shrink-0">
+                <div 
+                  class="flex align-items-center justify-content-center text-white font-bold"
+                  style="width: 48px; height: 48px; min-width: 48px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3); z-index: 10; font-size: 1.1rem;"
+                >
+                  {{ index + 1 }}
                 </div>
+                <div 
+                  v-if="index < selectedInfo.steps.length - 1"
+                  style="width: 2px; height: 50px; background: linear-gradient(180deg, #c5b3e3 0%, #dcc9f0 100%); margin-top: 0.25rem;"
+                ></div>
               </div>
+              <div class="flex-1 pt-1">
+                <div class="text-900 font-semibold mb-2" style="font-size: 0.95rem;">{{ step.title }}</div>
+                <div class="text-500" style="font-size: 0.85rem; line-height: 1.5;">{{ step.text }}</div>
+              </div>
+            </div>
+
+            <div class="flex justify-content-end mt-4">
+              <Button 
+                :label="selectedInfo.buttonText || 'Continue'" 
+                icon="pi pi-arrow-right" 
+                icon-pos="right"
+                class="p-button-rounded p-button-outlined"
+                :pt="{ root: { class: 'border-2' }, label: { class: 'font-semibold' } }"
+                @click="goTo(selectedInfo.navPath || '/connectors')" 
+              />
             </div>
           </div>
         </template>
@@ -157,30 +171,14 @@ function selectSection(section) {
 </script>
 
 <style scoped>
-.create-app-guide {
-  max-width: 1100px;
-  margin: 0 auto;
+/* Minimal CSS - mostly using PrimeVue utilities */
+:deep(.p-button-rounded.p-button-outlined) {
+  background: white !important;
+  border-color: #7c3aed !important;
+  color: #7c3aed !important;
 }
-.badge-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-}
-.guide-card {
-  height: 100px;
-  width: 100%;
-  box-sizing: border-box;
-}
-.guide-card :deep(.p-card-body) {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.step-badge {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  font-weight: 700;
+
+:deep(.p-button-rounded.p-button-outlined:hover) {
+  background: #f3effc !important;
 }
 </style>
