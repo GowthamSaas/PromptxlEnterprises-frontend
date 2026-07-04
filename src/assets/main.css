@@ -478,7 +478,7 @@ img, svg, video {
 .custom-input:focus {
   border-color: #8b5cf6;
   box-shadow: 0 0 0 3px rgba(139,92,246,.15);
-  background-color: #080a0f;
+  background-color: #fff;
   outline: none;
 }
 

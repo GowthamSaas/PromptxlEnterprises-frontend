@@ -30,20 +30,21 @@
         >
           <!-- Icon -->
           <div
-            :style="{
-              width: '72px',
-              height: '72px',
-              borderRadius: '16px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              background: iconBackground,
-              color: '#fff',
-              fontSize: '30px',
-              boxShadow: '0 10px 25px rgba(0,0,0,.15)'
-            }"
+            v-if="icon || $slots.icon"
+            style="
+              width:48px;
+              height:48px;
+              border-radius:14px;
+              background:iconBackground;
+              color:#fff;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              flex-shrink:0;
+            "
           >
-            <i :class="icon"></i>
+            <slot v-if="$slots.icon" name="icon" />
+            <i v-else :class="icon" style="font-size:20px" />
           </div>
 
           <!-- Title & Description -->
@@ -96,7 +97,7 @@
 
 <script setup>
 import Card from 'primevue/card'
-
+import VercelIcon from '../icons/VercelIcon.vue'
 defineProps({
   title: String,
   description: String,

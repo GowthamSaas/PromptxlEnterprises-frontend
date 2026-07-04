@@ -62,13 +62,14 @@ export const useConnectorStore = defineStore('connector', () => {
       }
 
       data.connectors.forEach(item => {
+        const metadata = item.provider_metadata ?? item.metadata ?? {}
 
         if (item.provider === 'vercel') {
 
           connectors.value.vercel = {
             connected: item.connected,
-            account: item.account_name,
-            teams: item.metadata?.teams || 0
+            account: item.account_name || '',
+            teams: metadata.teams || 0
           }
 
         }
@@ -77,8 +78,8 @@ export const useConnectorStore = defineStore('connector', () => {
 
           connectors.value.github = {
             connected: item.connected,
-            account: item.account_name,
-            repositories: item.metadata?.repositories || 0
+            account: item.account_name || '',
+            repositories: metadata.repositories || 0
           }
 
         }
@@ -87,8 +88,8 @@ export const useConnectorStore = defineStore('connector', () => {
 
           connectors.value.supabase = {
             connected: item.connected,
-            project: item.account_name,
-            tables: item.metadata?.tables || 0
+            project: item.account_name || '',
+            tables: metadata.tables || 0
           }
 
         }
