@@ -16,9 +16,12 @@ export const useLLMStore = defineStore('llm', () => {
 
     try {
       const response = await llmAPI.getProviders()
+      console.log('Fetch providers response:', response)
       providers.value = response.data.providers || []
+      console.log('Updated providers:', providers.value)
     } catch (err) {
       error.value = err.response?.data?.detail || 'Failed to load providers'
+      console.error('Fetch providers error:', err)
     } finally {
       loading.value = false
     }
@@ -30,12 +33,15 @@ export const useLLMStore = defineStore('llm', () => {
 
     try {
       const response = await llmAPI.connectProvider(payload)
+      console.log('Connect provider response:', response)
 
       await fetchProviders()
+      console.log('Providers after connect:', providers.value)
 
       return response
     } catch (err) {
       error.value = err.response?.data?.detail || 'Failed to connect provider'
+      console.error('Connect provider error:', err)
       throw err
     } finally {
       loading.value = false

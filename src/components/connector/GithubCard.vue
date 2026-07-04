@@ -16,212 +16,242 @@
     </template>
 
     <!-- ============================= -->
-    <!-- CONNECT FORM -->
+    <!-- ADMIN VIEW (Read Only) -->
     <!-- ============================= -->
-
-    <div v-if="!isConnected">
-
-      <!-- Label -->
-      <div
-        style="
-          font-size:14px;
-          font-weight:600;
-          color:#374151;
-          margin-bottom:8px;
-        "
-      >
-        GitHub Personal Access Token
-      </div>
-
-      <!-- Token -->
-      <IconField
-        iconPosition="left"
-        style="margin-bottom:18px"
-      >
-        <InputIcon class="pi pi-key" />
-
-        <Password
-          v-model="token"
-          placeholder="Enter your GitHub token..."
-          toggleMask
-          :feedback="false"
-          fluid
-          :disabled="localLoading"
-        />
-      </IconField>
-
-      <!-- Connect Button -->
-      <Button
-        :label="localLoading ? 'Validating...' : 'Connect GitHub'"
-        :icon="localLoading ? '' : 'pi pi-github'"
-        :loading="localLoading"
-        :disabled="localLoading"
-        fluid
-        @click="connect"
-      />
-
-      <!-- Help Panel -->
-      <Panel style="margin-top:20px">
-
-        <template #header>
-          <div
-            style="
-              display:flex;
-              align-items:center;
-              gap:8px;
-              font-weight:600;
-            "
-          >
-            <i class="pi pi-sparkles"></i>
-
-            How to get your API key
+    <div v-if="isAdminView">
+      <Message v-if="isConnected" severity="info" :closable="false">
+        <div class="row row-between">
+          <div>
+            <strong>API Key Connected</strong>
+            <small class="row">GitHub API is ready to use by the owner</small>
           </div>
-        </template>
-
-        <ol
-          style="
-            margin:0;
-            padding-left:20px;
-            color:#475569;
-            line-height:2;
-          "
-        >
-          <li>Open GitHub Settings</li>
-          <li>Go to Developer Settings</li>
-          <li>Select Personal Access Tokens</li>
-          <li>Generate a new token</li>
-          <li>Copy & paste it here</li>
-        </ol>
-
-        <Button
-          label="Get API Key"
-          icon="pi pi-external-link"
-          link
-          as="a"
-  href="https://github.com/"
-  target="_blank"
-        />
-
-      </Panel>
-
+          <i class="pi pi-check-circle" style="font-size: 1.5rem; color: #22c55e;"></i>
+        </div>
+      </Message>
+      <Message v-else severity="secondary" :closable="false">
+        <div class="row row-between">
+          <div>
+            <strong>Not Connected</strong>
+            <small class="row">Owner has not connected a GitHub API key yet</small>
+          </div>
+          <i class="pi pi-info-circle" style="font-size: 1.5rem;"></i>
+        </div>
+      </Message>
     </div>
 
     <!-- ============================= -->
-    <!-- CONNECTED UI -->
+    <!-- OWNER VIEW (Full Configuration) -->
     <!-- ============================= -->
+    <template v-else>
+      <!-- ============================= -->
+      <!-- CONNECT FORM -->
+      <!-- ============================= -->
 
-    <div v-else>
+      <div v-if="!isConnected">
 
-      <div
-        style="
-          background:#ECFDF5;
-          border:1px solid #BBF7D0;
-          border-radius:14px;
-          padding:22px;
-        "
-      >
-
-        <!-- Header -->
+        <!-- Label -->
         <div
           style="
-            display:flex;
-            justify-content:space-between;
-            align-items:flex-start;
+            font-size:14px;
+            font-weight:600;
+            color:#374151;
+            margin-bottom:8px;
+          "
+        >
+          GitHub Personal Access Token
+        </div>
+
+        <!-- Token -->
+        <IconField
+          iconPosition="left"
+          style="margin-bottom:18px"
+        >
+          <InputIcon class="pi pi-key" />
+
+          <Password
+            v-model="token"
+            placeholder="Enter your GitHub token..."
+            toggleMask
+            :feedback="false"
+            fluid
+            :disabled="localLoading"
+          />
+        </IconField>
+
+        <!-- Connect Button -->
+        <Button
+          :label="localLoading ? 'Validating...' : 'Connect GitHub'"
+          :icon="localLoading ? '' : 'pi pi-github'"
+          :loading="localLoading"
+          :disabled="localLoading"
+          fluid
+          @click="connect"
+        />
+
+        <!-- Help Panel -->
+        <Panel style="margin-top:20px">
+
+          <template #header>
+            <div
+              style="
+                display:flex;
+                align-items:center;
+                gap:8px;
+                font-weight:600;
+              "
+            >
+              <i class="pi pi-sparkles"></i>
+
+              How to get your API key
+            </div>
+          </template>
+
+          <ol
+            style="
+              margin:0;
+              padding-left:20px;
+              color:#475569;
+              line-height:2;
+            "
+          >
+            <li>Open GitHub Settings</li>
+            <li>Go to Developer Settings</li>
+            <li>Select Personal Access Tokens</li>
+            <li>Generate a new token</li>
+            <li>Copy & paste it here</li>
+          </ol>
+
+          <Button
+            label="Get API Key"
+            icon="pi pi-external-link"
+            link
+            as="a"
+            href="https://github.com/"
+            target="_blank"
+          />
+
+        </Panel>
+
+      </div>
+
+      <!-- ============================= -->
+      <!-- CONNECTED UI -->
+      <!-- ============================= -->
+
+      <div v-else>
+
+        <div
+          style="
+            background:#ECFDF5;
+            border:1px solid #BBF7D0;
+            border-radius:14px;
+            padding:22px;
           "
         >
 
-          <div>
+          <!-- Header -->
+          <div
+            style="
+              display:flex;
+              justify-content:space-between;
+              align-items:flex-start;
+            "
+          >
+
+            <div>
+
+              <div
+                style="
+                  display:flex;
+                  align-items:center;
+                  gap:10px;
+                  color:#166534;
+                  font-size:20px;
+                  font-weight:700;
+                "
+              >
+                <i class="pi pi-check-circle"></i>
+
+                API Key Connected
+              </div>
+
+              <div
+                style="
+                  margin-top:8px;
+                  color:#166534;
+                "
+              >
+                Your GitHub API is ready to use
+              </div>
+
+            </div>
+
+            <Button
+              label="Disconnect"
+              icon="pi pi-trash"
+              text
+              severity="danger"
+              :loading="loading"
+              @click="disconnect"
+            />
+
+          </div>
+
+          <!-- Details -->
+
+          <div
+            style="
+              display:flex;
+              flex-direction:column;
+              gap:14px;
+              margin-top:22px;
+            "
+          >
 
             <div
               style="
                 display:flex;
                 align-items:center;
                 gap:10px;
-                color:#166534;
-                font-size:20px;
-                font-weight:700;
+                color:#15803d;
               "
             >
-              <i class="pi pi-check-circle"></i>
+              <i class="pi pi-user"></i>
 
-              API Key Connected
+              <span>{{ account }}</span>
+
             </div>
 
             <div
               style="
-                margin-top:8px;
-                color:#166534;
+                display:flex;
+                align-items:center;
+                gap:10px;
+                color:#15803d;
               "
             >
-              Your GitHub API is ready to use
+              <i class="pi pi-github"></i>
+
+              <span>{{ repositories }} repositories available</span>
+
             </div>
 
           </div>
 
-          <Button
-            label="Disconnect"
-            icon="pi pi-trash"
-            text
-            severity="danger"
-            :loading="loading"
-            @click="disconnect"
-          />
-
         </div>
 
-        <!-- Details -->
+        <!-- Success Message -->
 
-        <div
-          style="
-            display:flex;
-            flex-direction:column;
-            gap:14px;
-            margin-top:22px;
-          "
+        <Message
+          severity="success"
+          style="margin-top:22px"
         >
-
-          <div
-            style="
-              display:flex;
-              align-items:center;
-              gap:10px;
-              color:#15803d;
-            "
-          >
-            <i class="pi pi-user"></i>
-
-            <span>{{ account }}</span>
-
-          </div>
-
-          <div
-            style="
-              display:flex;
-              align-items:center;
-              gap:10px;
-              color:#15803d;
-            "
-          >
-            <i class="pi pi-github"></i>
-
-            <span>{{ repositories }} repositories available</span>
-
-          </div>
-
-        </div>
+          Connected successfully! Account: {{ account }}
+        </Message>
 
       </div>
-
-      <!-- Success Message -->
-
-      <Message
-        severity="success"
-        style="margin-top:22px"
-      >
-        Connected successfully! Account: {{ account }}
-      </Message>
-
-    </div>
+    </template>
+    <!-- End Owner View -->
 
   </ConnectorCard>
 </template>
@@ -239,14 +269,20 @@ import InputIcon from 'primevue/inputicon'
 import ConnectorCard from './ConnectorCard.vue'
 
 import { useConnectorStore } from '../../stores/connector'
+import { useAuthStore } from '../../stores/auth'
 import { useToast } from 'primevue/usetoast'
 
 const token = ref('')
 
 const connectorStore = useConnectorStore()
+const authStore = useAuthStore()
 const toast = useToast()
 
 const localLoading = ref(false)
+
+// Role-based view control
+const isAdminView = computed(() => authStore.isAdmin && !authStore.isOwner)
+const canConfigure = computed(() => authStore.isOwner)
 
 const isConnected = computed(() => {
   return connectorStore.connectors.github.connected

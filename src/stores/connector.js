@@ -98,6 +98,10 @@ export const useConnectorStore = defineStore('connector', () => {
 
     }
 
+    catch (error) {
+      console.error('Failed to fetch connectors:', error)
+    }
+
     finally {
 
       loading.value = false

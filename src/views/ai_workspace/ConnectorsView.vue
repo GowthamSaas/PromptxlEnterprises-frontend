@@ -47,6 +47,4 @@ onMounted(()=>{
     connectorStore.fetchConnectors()
 
 })
-
-
 </script>

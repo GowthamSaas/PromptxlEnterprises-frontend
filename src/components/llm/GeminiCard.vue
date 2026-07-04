@@ -13,45 +13,74 @@
         <Tag :severity="provider.connected ? 'success' : 'secondary'" :value="provider.connected ? 'Connected' : 'Not Connected'" />
       </div>
 
-      <template v-if="!provider.connected">
-        <label class="field-label">Gemini API Key</label>
-        <InputGroup class="field">
-          <InputGroupAddon><i class="pi pi-key" /></InputGroupAddon>
-          <Password v-model="apiKey" :disabled="loading" toggleMask :feedback="false" placeholder="gm-..." />
-        </InputGroup>
-
-        <Button :label="`Connect Gemini`" icon="pi pi-link" severity="help" :loading="loading" :disabled="loading || !apiKey" fluid class="field" @click="connectProvider" />
-
-        <Message severity="help" :closable="false" icon="pi pi-sparkles">
-          <strong class="guide-title">How to get your API key</strong>
-          <ol class="guide-list">
-            <li>Open Google AI Studio</li>
-            <li>Create API Key</li>
-            <li>Copy and paste the key here</li>
-          </ol>
-          <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" class="row guide-link">
-            <i class="pi pi-external-link" /> Get API Key
-          </a>
-        </Message>
-      </template>
-
-      <template v-else>
-        <Message severity="info" :closable="false" icon="pi pi-check-circle">
+      <!-- ============================= -->
+      <!-- ADMIN VIEW (Read Only) -->
+      <!-- ============================= -->
+      <template v-if="isAdminView">
+        <Message v-if="provider.connected" severity="info" :closable="false">
           <div class="row row-between">
             <div>
               <strong class="guide-title">API Key Connected</strong>
-              <small>Your Gemini API is ready to use</small>
+              <small>Gemini API is ready to use by the owner</small>
             </div>
-            <Button label="Disconnect" icon="pi pi-trash" severity="danger" text :loading="loading" :disabled="loading" @click="disconnectProvider" />
+            <i class="pi pi-check-circle" style="font-size: 1.5rem; color: #22c55e;"></i>
           </div>
         </Message>
+        <Message v-else severity="secondary" :closable="false">
+          <div class="row row-between">
+            <div>
+              <strong class="guide-title">Not Connected</strong>
+              <small>Owner has not connected a Gemini API key yet</small>
+            </div>
+            <i class="pi pi-info-circle" style="font-size: 1.5rem;"></i>
+          </div>
+        </Message>
+      </template>
+
+      <!-- ============================= -->
+      <!-- OWNER VIEW (Full Configuration) -->
+      <!-- ============================= -->
+      <template v-else>
+        <template v-if="!provider.connected">
+          <label class="field-label">Gemini API Key</label>
+          <InputGroup class="field">
+            <InputGroupAddon><i class="pi pi-key" /></InputGroupAddon>
+            <Password v-model="apiKey" :disabled="loading" toggleMask :feedback="false" placeholder="gm-..." />
+          </InputGroup>
+
+          <Button :label="`Connect Gemini`" icon="pi pi-link" severity="help" :loading="loading" :disabled="loading || !apiKey" fluid class="field" @click="connectProvider" />
+
+          <Message severity="help" :closable="false" icon="pi pi-sparkles">
+            <strong class="guide-title">How to get your API key</strong>
+            <ol class="guide-list">
+              <li>Open Google AI Studio</li>
+              <li>Create API Key</li>
+              <li>Copy and paste the key here</li>
+            </ol>
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" class="row guide-link">
+              <i class="pi pi-external-link" /> Get API Key
+            </a>
+          </Message>
+        </template>
+
+        <template v-else>
+          <Message severity="info" :closable="false" icon="pi pi-check-circle">
+            <div class="row row-between">
+              <div>
+                <strong class="guide-title">API Key Connected</strong>
+                <small>Your Gemini API is ready to use</small>
+              </div>
+              <Button label="Disconnect" icon="pi pi-trash" severity="danger" text :loading="loading" :disabled="loading" @click="disconnectProvider" />
+            </div>
+          </Message>
+        </template>
       </template>
     </template>
   </Card>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import Password from 'primevue/password'
@@ -60,10 +89,17 @@ import Avatar from 'primevue/avatar'
 import Message from 'primevue/message'
 import InputGroup from 'primevue/inputgroup'
 import InputGroupAddon from 'primevue/inputgroupaddon'
+import { useAuthStore } from '../../stores/auth'
 
 const props = defineProps({ provider: { type: Object, required: true }, loading: { type: Boolean, default: false } })
 const emit = defineEmits(['connect', 'disconnect'])
 const apiKey = ref('')
+
+const authStore = useAuthStore()
+
+// Role-based view control
+const isAdminView = computed(() => authStore.isAdmin && !authStore.isOwner)
+const canConfigure = computed(() => authStore.isOwner)
 
 function connectProvider() {
   if (!apiKey.value.trim()) {
