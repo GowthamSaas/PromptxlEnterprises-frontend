@@ -5,6 +5,9 @@
     icon="pi pi-send"
     iconBackground="#111827"
   >
+    <template #icon>
+       <VercelIcon />
+  </template>
     <!-- Connected Badge -->
     <template #actions>
       <Tag
@@ -224,6 +227,7 @@ import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 
 import ConnectorCard from './ConnectorCard.vue'
+import VercelIcon from '../icons/VercelIcon.vue'
 
 import { useConnectorStore } from '../../stores/connector'
 
