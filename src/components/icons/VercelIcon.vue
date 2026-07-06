@@ -1,5 +1,5 @@
 <script setup>
-import { siVercel } from 'simple-icons/icons'
+import { siVercel } from 'simple-icons'
 </script>
 
 <template>
