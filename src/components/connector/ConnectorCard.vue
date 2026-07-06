@@ -1,13 +1,20 @@
 <template>
-  <Card
-    :pt="{
-      content: {
-        style: {
-          padding: '28px'
-        }
+ <Card
+  :pt="{
+    root:{
+      style:{
+        borderRadius:'22px',
+        border:'1px solid #E5E7EB',
+        boxShadow:'0 8px 24px rgba(15,23,42,0.06)'
       }
-    }"
-  >
+    },
+    content:{
+      style:{
+        padding:'30px'
+      }
+    }
+  }"
+>
     <template #content>
 
       <!-- Header -->
@@ -24,7 +31,7 @@
           style="
             display:flex;
             align-items:center;
-            gap:16px;
+            gap:20px;
             flex:1;
           "
         >
@@ -32,14 +39,15 @@
           <div
             v-if="icon || $slots.icon"
             style="
-              width:48px;
-              height:48px;
-              border-radius:14px;
+              width:56px;
+              height:56px;
+              border-radius:16px;
               background:iconBackground;
               color:#fff;
               display:flex;
               align-items:center;
               justify-content:center;
+              overflow:hidden;
               flex-shrink:0;
             "
           >
@@ -59,7 +67,7 @@
             >
               <div
                 style="
-                  font-size:24px;
+                  font-size:25px;
                   font-weight:700;
                   color:#111827;
                 "
@@ -73,8 +81,8 @@
 
             <div
               style="
-                color:#64748b;
-                font-size:16px;
+                color:#6B7280;
+                font-size:15px;
               "
             >
               {{ description }}
@@ -83,11 +91,17 @@
         </div>
 
         <!-- New Actions Slot -->
-        <div style="margin-left:16px">
+        <div
+  style="
+    margin-left:20px;
+    display:flex;
+    align-items:center;
+  "
+>
           <slot name="actions"></slot>
         </div>
       </div>
-
+     <Divider style="margin:24px 0" />
       <!-- Body -->
       <slot />
 
@@ -98,6 +112,8 @@
 <script setup>
 import Card from 'primevue/card'
 import VercelIcon from '../icons/VercelIcon.vue'
+import Divider from 'primevue/divider'
+
 defineProps({
   title: String,
   description: String,

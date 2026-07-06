@@ -10,21 +10,31 @@ export const useConnectorStore = defineStore('connector', () => {
   const connectors = ref({
 
     vercel: {
-      connected: false,
-      account: '',
-      teams: 0
-    },
+  connected: false,
+  account: '',
+  teams: 0,
+
+  connectedBy: '',
+  connectedOn: '',
+  lastUsed: ''
+},
 
     github: {
       connected: false,
       account: '',
-      repositories: 0
+      repositories: 0,
+       connectedBy: '',
+  connectedOn: '',
+  lastUsed: ''
     },
 
     supabase: {
       connected: false,
       project: '',
-      tables: 0
+      tables: 0,
+      connectedBy: '',
+  connectedOn: '',
+  lastUsed: ''
     }
 
   })
@@ -44,21 +54,31 @@ export const useConnectorStore = defineStore('connector', () => {
       // reset
 
       connectors.value.vercel = {
-        connected: false,
-        account: '',
-        teams: 0
-      }
+    connected: false,
+    account: '',
+    teams: 0,
+
+    connectedBy: '',
+    connectedOn: '',
+    lastUsed: ''
+}
 
       connectors.value.github = {
         connected: false,
         account: '',
-        repositories: 0
+        repositories: 0,
+        connectedBy: '',
+  connectedOn: '',
+  lastUsed: ''
       }
 
       connectors.value.supabase = {
         connected: false,
         project: '',
-        tables: 0
+        tables: 0,
+        connectedBy: '',
+  connectedOn: '',
+  lastUsed: ''
       }
 
       data.connectors.forEach(item => {
@@ -67,10 +87,14 @@ export const useConnectorStore = defineStore('connector', () => {
         if (item.provider === 'vercel') {
 
           connectors.value.vercel = {
-            connected: item.connected,
-            account: item.account_name || '',
-            teams: metadata.teams || 0
-          }
+    connected: item.connected,
+    account: item.account_name || '',
+    teams: metadata.teams || 0,
+
+    connectedBy: item.connected_by || '',
+    connectedOn: item.connected_at || '',
+    lastUsed: item.last_used || ''
+}
 
         }
 
@@ -79,7 +103,10 @@ export const useConnectorStore = defineStore('connector', () => {
           connectors.value.github = {
             connected: item.connected,
             account: item.account_name || '',
-            repositories: metadata.repositories || 0
+            repositories: metadata.repositories || 0,
+            connectedBy: item.connected_by || '',
+  connectedOn: item.connected_at || '',
+  lastUsed: item.last_used || ''
           }
 
         }
@@ -89,7 +116,10 @@ export const useConnectorStore = defineStore('connector', () => {
           connectors.value.supabase = {
             connected: item.connected,
             project: item.account_name || '',
-            tables: metadata.tables || 0
+            tables: metadata.tables || 0,
+             connectedBy: item.connected_by || '',
+  connectedOn: item.connected_at || '',
+  lastUsed: item.last_used || ''
           }
 
         }
