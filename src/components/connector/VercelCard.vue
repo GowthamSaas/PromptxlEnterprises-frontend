@@ -10,18 +10,22 @@
   </template>
     <!-- Connected Badge -->
     <template #actions>
-      <Tag
-        v-if="isConnected"
-        value="Connected"
-        severity="success"
-        rounded
-      />
-    </template>
+
+  <Tag
+    v-if="isConnected"
+    value="Connected"
+    severity="success"
+    rounded
+  />
+
+ 
+
+</template>
 
     <!-- ============================= -->
     <!-- ADMIN VIEW (Read Only) -->
     <!-- ============================= -->
-    <div v-if="isAdminView">
+    <!-- <div v-if="isAdminView">
       <Message v-if="isConnected" severity="info" :closable="false">
         <div class="row row-between">
           <div>
@@ -40,7 +44,18 @@
           <i class="pi pi-info-circle" style="font-size: 1.5rem;"></i>
         </div>
       </Message>
-    </div>
+    </div> -->
+    <div v-if="isAdminView">
+   <ConnectorStatus
+    :connected="isConnected"
+    provider="Vercel"
+    :connectedBy="connectedBy"
+    :connectedOn="connectedOn"
+    :lastUsed="lastUsed"
+/>
+</div>
+
+
 
     <!-- ============================= -->
     <!-- OWNER VIEW (Full Configuration) -->
@@ -161,8 +176,8 @@
                   display:flex;
                   align-items:center;
                   gap:10px;
-                  font-size:22px;
-                  font-weight:700;
+                  font-size:18px;
+                  font-weight:600;
                   color:#166534;
                 "
               >
@@ -211,22 +226,13 @@
               "
             >
               <i class="pi pi-cloud"></i>
-
+              <!-- <span>{{ project }}</span> -->
               <span>{{ teams }} team(s) available</span>
 
             </div>
           </div>
 
         </div>
-
-        <!-- Success Message -->
-        <Message
-          severity="success"
-          style="margin-top:22px"
-        >
-          Connected successfully! Account: {{ account }}
-        </Message>
-
       </div>
 
     </template>
@@ -246,12 +252,13 @@ import InputIcon from 'primevue/inputicon'
 
 import ConnectorCard from './ConnectorCard.vue'
 import VercelIcon from '../icons/VercelIcon.vue'
+import ConnectorStatus from './ConnectorStatus.vue'
 
 import { useConnectorStore } from '../../stores/connector'
 import { useAuthStore } from '../../stores/auth'
 
 import { useToast } from 'primevue/usetoast'
-import Message from 'primevue/message'
+
 
 const token = ref('')
 
@@ -264,19 +271,30 @@ const localLoading = ref(false)
 
 // Role-based view control
 const isAdminView = computed(() => authStore.isAdmin && !authStore.isOwner)
-const canConfigure = computed(() => authStore.isOwner)
+
 
 const isConnected = computed(() => {
   return connectorStore.connectors.vercel.connected
 })
 
-const account = computed(() => {
-  return connectorStore.connectors.vercel.account
-})
+
 
 const teams = computed(() => {
   return connectorStore.connectors.vercel.teams
 })
+
+const connectedBy = computed(() => {
+  return connectorStore.connectors.vercel.connectedBy
+})
+
+const connectedOn = computed(() => {
+  return connectorStore.connectors.vercel.connectedOn
+})
+
+const lastUsed = computed(() => {
+  return connectorStore.connectors.vercel.lastUsed
+})
+
 
 async function connect() {
 
@@ -322,15 +340,26 @@ async function connect() {
 
 async function disconnect() {
 
-  await connectorStore.disconnectConnector('vercel')
+  localLoading.value = true
 
-  token.value = ''
+  try {
 
-  toast.add({
-    severity: 'success',
-    summary: 'Disconnected',
-    detail: 'Vercel disconnected successfully.',
-    life: 3000
-  })
+    await connectorStore.disconnectConnector('vercel')
+
+    token.value = ''
+
+    toast.add({
+      severity: 'success',
+      summary: 'Disconnected',
+      detail: 'Vercel disconnected successfully.',
+      life: 3000
+    })
+
+  } finally {
+
+    localLoading.value = false
+
+  }
+
 }
 </script>

@@ -2,7 +2,7 @@
   <ConnectorCard
     title="Supabase"
     description="Connect your Supabase account"
-    icon="pi pi-database"
+    icon="pi pi-supabase"
     iconBackground="#22C55E"
   >
     <!-- Connected Badge -->
@@ -81,7 +81,7 @@
         <!-- Connect Button -->
         <Button
           :label="localLoading ? 'Validating...' : 'Connect Supabase'"
-          :icon="localLoading ? '' : 'pi pi-check-circle'"
+          :icon="localLoading ? '' : 'pi pi-supabase'"
           :loading="localLoading"
           :disabled="localLoading"
           fluid
@@ -215,7 +215,7 @@
                 color:#15803d;
               "
             >
-              <i class="pi pi-database"></i>
+              <i class="pi pi-supabase"></i>
 
               <span>{{ project }}</span>
 
@@ -239,7 +239,7 @@
 
         </div>
 
-      </div>
+      
 
       <!-- Bottom Success Message -->
 
@@ -249,7 +249,7 @@
       >
         Connected successfully! Project: {{ project }}
       </Message>
-
+      </div>
     </template>
     <!-- End Owner View -->
 
@@ -266,7 +266,7 @@ import Tag from 'primevue/tag'
 import Message from 'primevue/message'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
-
+import SupabaseIcon from '../icons/SupabaseIcon.vue'
 import ConnectorCard from './ConnectorCard.vue'
 
 import { useConnectorStore } from '../../stores/connector'
