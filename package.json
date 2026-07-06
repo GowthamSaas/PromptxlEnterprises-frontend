@@ -9,13 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@primeicons/vue": "^8.0.0-alpha.1",
     "@primeuix/themes": "^2.0.3",
     "axios": "^1.6.7",
     "pinia": "^2.1.7",
     "primeflex": "^4.0.0",
     "primeicons": "^6.0.1",
     "primevue": "^4.5.5",
-    "simple-icons": "^16.24.1",
+    "simple-icons": "^16.25.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
