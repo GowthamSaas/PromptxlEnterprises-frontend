@@ -1,150 +1,179 @@
 <template>
-  <!-- Status Card -->
-  <div
-    :style="{
-      border: connected ? '1px solid #BBF7D0' : '1px solid #FECACA',
-      background: connected ? '#F0FDF4' : '#FEF2F2',
-      borderRadius: '16px',
-      padding: '22px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '18px'
-    }"
-  >
-    <!-- Icon -->
-    <Avatar
-      :icon="connected ? 'pi pi-check-circle' : 'pi pi-times-circle'"
-      shape="circle"
-      :style="{
-        width:'60px',
-        height:'60px',
-        background: connected ? '#DCFCE7' : '#FEE2E2',
-        color: connected ? '#16A34A' : '#DC2626'
-      }"
-    />
+  <div>
+    <!-- Status Box -->
+    <div
+  :style="{
+    border: connected ? '1px solid #BBF7D0' : '1px solid #FECACA',
+    background: connected ? '#F0FDF4' : '#FEF2F2',
+    borderRadius: '18px',
+    padding: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '20px',
+    minHeight:'132px',
+    boxSizing:'border-box'
+  }"
+>
+      <!-- Icon -->
+      <Avatar
+  :icon="connected ? 'pi pi-check-circle' : 'pi pi-link'"
+  shape="circle"
+  :style="{
+    width:'64px',
+    height:'64px',
+    background: connected ? '#DCFCE7' : '#FEE2E2',
+    border:'none',
+    color: connected ? '#16A34A' : '#DC2626'
+  }"
+  :pt="{
+    icon: {
+      style: {
+        fontSize: '22px'
+      }
+    }
+  }"
+/>
 
-    <!-- Text -->
-    <div style="flex:1">
+      <!-- Content -->
+      <div style="flex:1">
 
-      <div
-        :style="{
-          fontSize:'28px',
-          fontWeight:'700',
-          color: connected ? '#166534' : '#991B1B'
-        }"
-      >
-        {{ connected ? 'Connected' : 'Not Connected' }}
-      </div>
+        <div
+          :style="{
+            fontSize:'20px',
+            fontWeight:'600',
+            color:'#111827'
+          }"
+        >
+          {{ connected ? 'Connected' : 'Not Connected' }}
+        </div>
 
-      <div
-        style="
-          margin-top:6px;
-          color:#64748B;
-          font-size:16px;
-        "
-      >
-        {{
-          connected
-            ? 'API key is active and ready to use'
-            : `Owner has not connected a ${provider} API key yet.`
-        }}
+        <div
+          style="
+            margin-top:8px;
+           color:#475569;
+            font-size:15px;
+line-height:1.6;
+          "
+        >
+          {{
+            connected
+              ? 'API key is active and ready to use'
+              : `Owner has not connected a ${provider} API key yet`
+          }}
+        </div>
+
       </div>
 
     </div>
 
-  </div>
-
-  <!-- Connection Details -->
+    <!-- Footer -->
   <div
-    v-if="connected"
+  v-if="connected"
+  style="
+    display:flex;
+    margin-top:24px;
+    align-items:flex-start;
+  "
+>
+
+      <!-- Connected By -->
+      <div
+  style="
+    padding-right:26px;
+    border-right:1px solid #E5E7EB;
+  "
+>
+
+  <div
     style="
-      display:flex;
-      gap:36px;
-      margin-top:22px;
-      padding-top:18px;
-      border-top:1px solid #DCFCE7;
+      font-size:13px;
+      color:#6B7280;
+      margin-bottom:8px;
     "
   >
+    Connected by
+  </div>
 
-    <div>
+  <div
+    style="
+      font-size:18px;
+      font-weight:600;
+      color:#2563EB;
+    "
+  >
+    {{ connectedBy || '-' }}
+  </div>
 
+</div>
+
+      <!-- Connected On -->
       <div
-        style="
-          font-size:13px;
-          color:#6B7280;
-        "
-      >
-        Connected by
+  style="
+    padding:0 26px;
+    border-right:1px solid #E5E7EB;
+  "
+>
+
+        <div
+          style="
+            font-size:13px;
+            color:#6B7280;
+            margin-bottom:8px;
+          "
+        >
+          Connected on
+        </div>
+
+        <div
+          style="
+            font-size:18px;
+            font-weight:600;
+            color:#2563EB;
+          "
+        >
+          {{ formatDate(connectedOn) }}
+        </div>
+
       </div>
 
+      <!-- Last Used -->
       <div
-        style="
-          margin-top:6px;
-          font-weight:600;
-          color:#2563EB;
-        "
-      >
-        {{ connectedBy || '-' }}
-      </div>
+  style="
+    padding-left:26px;
+  "
+>
 
-    </div>
+        <div
+          style="
+            font-size:14px;
+            color:#6B7280;
+            margin-bottom:8px;
+          "
+        >
+          Last used
+        </div>
 
-    <div>
+        <div
+          style="
+            font-size:18px;
+            font-weight:600;
+            color:#2563EB;
+          "
+        >
+          {{ formatDate(lastUsed) }}
+        </div>
 
-      <div
-        style="
-          font-size:13px;
-          color:#6B7280;
-        "
-      >
-        Connected on
-      </div>
-
-      <div
-        style="
-          margin-top:6px;
-          font-weight:600;
-          color:#2563EB;
-        "
-      >
-        {{ formatDate(connectedOn) }}
-      </div>
-
-    </div>
-
-    <div>
-
-      <div
-        style="
-          font-size:13px;
-          color:#6B7280;
-        "
-      >
-        Last used
-      </div>
-
-      <div
-        style="
-          margin-top:6px;
-          font-weight:600;
-          color:#2563EB;
-        "
-      >
-        {{ formatDateTime(lastUsed) }}
       </div>
 
     </div>
 
   </div>
-
 </template>
 
 <script setup>
-
 import Avatar from 'primevue/avatar'
 
 defineProps({
-
   connected: Boolean,
 
   provider: {
@@ -166,7 +195,6 @@ defineProps({
     type: String,
     default: ''
   }
-
 })
 
 function formatDate(value) {
@@ -175,18 +203,9 @@ function formatDate(value) {
 
   return new Date(value).toLocaleDateString('en-US', {
     month: 'short',
-    day: 'numeric',
+    day: '2-digit',
     year: 'numeric'
   })
 
 }
-
-function formatDateTime(value) {
-
-  if (!value) return '-'
-
-  return new Date(value).toLocaleString()
-
-}
-
 </script>

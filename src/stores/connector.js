@@ -114,13 +114,13 @@ export const useConnectorStore = defineStore('connector', () => {
         if (item.provider === 'supabase') {
 
           connectors.value.supabase = {
-            connected: item.connected,
-            project: item.account_name || '',
-            tables: metadata.tables || 0,
-             connectedBy: item.connected_by || '',
+  connected: item.connected,
+  project: item.account_name || '',
+  tables: metadata.tables || 0,
+  connectedBy: item.connected_by || '',
   connectedOn: item.connected_at || '',
   lastUsed: item.last_used || ''
-          }
+}
 
         }
 

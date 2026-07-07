@@ -36,13 +36,23 @@ const loading = computed(() => llmStore.loading)
 
 const providers = computed(() => {
   return llmProviders.map(provider => {
-    const connected = llmStore.providers.find(
+
+    const providerInfo = llmStore.providers.find(
       item => item.provider === provider.key
     )
 
+
     return {
       ...provider,
-      connected: !!connected
+
+      connected: !!providerInfo,
+
+      ownerConnected: providerInfo?.owner_connected ?? false,
+      connectedBy: providerInfo?.connected_by ?? null,
+      connectedOn: providerInfo?.connected_on ?? null,
+      lastUsed: providerInfo?.last_used ?? null,
+
+      raw: providerInfo
     }
   })
 })

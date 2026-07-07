@@ -6,36 +6,213 @@
           <Avatar icon="pi pi-bolt" shape="square" size="large" class="openai-avatar" />
           <div>
             <h3 class="title">OpenAI</h3>
-            <small class="subtitle">Connect your OpenAI API for GPT models and more.</small>
+           <small class="subtitle">
+  Owner-managed OpenAI provider for your workspace.
+</small>
           </div>
         </div>
 
-        <Tag :severity="provider.connected ? 'success' : 'secondary'" :value="provider.connected ? 'Connected' : 'Not Connected'" />
+       <Tag
+  :severity="provider.ownerConnected ? 'success' : 'danger'"
+  :value="provider.ownerConnected ? 'Connected' : 'Not Connected'"
+  rounded
+/>
       </div>
 
       <!-- ============================= -->
       <!-- ADMIN VIEW (Read Only) -->
       <!-- ============================= -->
-      <template v-if="isAdminView">
-        <Message v-if="provider.connected" severity="info" :closable="false">
-          <div class="row row-between">
-            <div>
-              <strong class="guide-title">API Key Connected</strong>
-              <small>OpenAI API is ready to use by the owner</small>
+    <!-- ============================= -->
+<!-- ADMIN VIEW (Read Only) -->
+<!-- ============================= -->
+<template v-if="isAdminView">
+
+  <!-- Connected -->
+  <Card
+    v-if="provider.ownerConnected"
+    :pt="{
+      body: { style: { padding: '18px' } },
+      content: { style: { padding: 0 } }
+    }"
+    style="border:1px solid #dcfce7;background:#f0fdf4;"
+  >
+    <template #content>
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+        "
+      >
+
+        <div
+          style="
+            display:flex;
+            align-items:center;
+            gap:12px;
+          "
+        >
+
+          <i
+            class="pi pi-check-circle"
+            style="
+              font-size:28px;
+              color:#16a34a;
+            "
+          ></i>
+
+          <div>
+
+            <div
+              style="
+                font-weight:600;
+                color:#14532d;
+              "
+            >
+              Connected
             </div>
-            <i class="pi pi-check-circle" style="font-size: 1.5rem; color: #22c55e;"></i>
-          </div>
-        </Message>
-        <Message v-else severity="secondary" :closable="false">
-          <div class="row row-between">
-            <div>
-              <strong class="guide-title">Not Connected</strong>
-              <small>Owner has not connected an OpenAI API key yet</small>
+
+            <div
+              style="
+                font-size:13px;
+                color:#166534;
+                margin-top:4px;
+              "
+            >
+              API key is active and ready to use.
             </div>
-            <i class="pi pi-info-circle" style="font-size: 1.5rem;"></i>
+
           </div>
-        </Message>
-      </template>
+
+        </div>
+
+        <Tag
+          value="Connected"
+          severity="success"
+          rounded
+        />
+
+      </div>
+
+    </template>
+  </Card>
+
+  <!-- Not Connected -->
+  <Card
+    v-else
+    :pt="{
+      body: { style: { padding: '18px' } },
+      content: { style: { padding: 0 } }
+    }"
+    style="border:1px solid #fee2e2;background:#fef2f2;"
+  >
+    <template #content>
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+        "
+      >
+
+        <div
+          style="
+            display:flex;
+            align-items:center;
+            gap:12px;
+          "
+        >
+
+          <i
+            class="pi pi-times-circle"
+            style="
+              font-size:28px;
+              color:#dc2626;
+            "
+          ></i>
+
+          <div>
+
+            <div
+              style="
+                font-weight:600;
+                color:#991b1b;
+              "
+            >
+              Not Connected
+            </div>
+
+            <div
+              style="
+                font-size:13px;
+                color:#b91c1c;
+                margin-top:4px;
+              "
+            >
+              Owner has not connected an OpenAI API key yet.
+            </div>
+
+          </div>
+
+        </div>
+
+        <Tag
+          value="Not Available"
+          severity="danger"
+          rounded
+        />
+
+      </div>
+        
+    </template>
+  </Card>
+  <template v-if="provider.ownerConnected">
+   <Divider style="margin:16px 0;" />
+
+<div
+  style="
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    font-size:14px;
+  "
+>
+
+  <div
+    style="
+      display:flex;
+      justify-content:space-between;
+    "
+  >
+    <span style="color:#64748b;">Connected By</span>
+    <strong>{{ provider.connectedBy }}</strong>
+  </div>
+
+  <div
+    style="
+      display:flex;
+      justify-content:space-between;
+    "
+  >
+    <span style="color:#64748b;">Connected On</span>
+    <strong>{{ formatDate(provider.connectedOn) }}</strong>
+  </div>
+
+  <div
+    style="
+      display:flex;
+      justify-content:space-between;
+    "
+  >
+    <span style="color:#64748b;">Last Used</span>
+    <strong>{{ formatDate(provider.lastUsed) }}</strong>
+  </div>
+
+</div>
+</template>
+</template>
 
       <!-- ============================= -->
       <!-- OWNER VIEW (Full Configuration) -->
@@ -91,7 +268,7 @@ import Message from 'primevue/message'
 import InputGroup from 'primevue/inputgroup'
 import InputGroupAddon from 'primevue/inputgroupaddon'
 import { useAuthStore } from '../../stores/auth'
-
+import Divider from 'primevue/divider'
 const props = defineProps({ provider: { type: Object, required: true }, loading: { type: Boolean, default: false } })
 const emit = defineEmits(['connect', 'disconnect'])
 const apiKey = ref('')
@@ -113,6 +290,19 @@ function connectProvider() {
 
 function disconnectProvider() {
   emit('disconnect', 'openai')
+}
+
+function formatDate(value) {
+  if (!value) return '-'
+
+  return new Date(value).toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric'
+  })
+  watchEffect(() => {
+  console.log('OpenAI Card', props.provider)
+})
 }
 </script>
 
