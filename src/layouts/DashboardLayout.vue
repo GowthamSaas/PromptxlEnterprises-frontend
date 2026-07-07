@@ -66,7 +66,7 @@
               Applications
             </span>
           </router-link>
-          <router-link to="/assignments" class="nav-item" active-class="nav-item--active">
+          <router-link to="/project-assignments" class="nav-item" active-class="nav-item--active">
             <i class="pi pi-link"></i>
             <span class="menu-label"
     >
@@ -161,7 +161,7 @@
               <i class="pi pi-th-large"></i>
               <span>Applications</span>
             </router-link>
-            <router-link to="/assignments" class="nav-item" active-class="nav-item--active" @click="sidebarVisible = false">
+            <router-link to="/project-assignments" class="nav-item" active-class="nav-item--active" @click="sidebarVisible = false">
               <i class="pi pi-link"></i>
               <span>Assignments</span>
             </router-link>

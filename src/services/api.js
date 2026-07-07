@@ -61,14 +61,7 @@ export const usersAPI = {
   delete: (id) => api.delete(`/users/${id}`)
 }
 
-// Applications API
-export const applicationsAPI = {
-  getAll: () => api.get('/applications'),
-  getById: (id) => api.get(`/applications/${id}`),
-  create: (data) => api.post('/applications', data),
-  update: (id, data) => api.put(`/applications/${id}`, data),
-  delete: (id) => api.delete(`/applications/${id}`)
-}
+
 
 // Tenants API
 export const tenantsAPI = {
@@ -78,10 +71,4 @@ export const tenantsAPI = {
   delete: (id) => api.delete(`/tenants/${id}`)
 }
 
-// Assignments API
-export const assignmentsAPI = {
-  getUserAssignments: (userId) => api.get(`/assignments/user/${userId}`),
-  getAppAssignments: (appId) => api.get(`/assignments/application/${appId}`),
-  assign: (data) => api.post('/assignments', data),
-  remove: (userId, appId) => api.delete(`/assignments/${userId}/${appId}`)
-}
+ 
