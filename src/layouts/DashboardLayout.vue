@@ -59,7 +59,7 @@
               Users
             </span>
           </router-link>
-          <router-link to="/applications" class="nav-item" active-class="nav-item--active">
+          <router-link to="/projects" class="nav-item" active-class="nav-item--active">
             <i class="pi pi-th-large"></i>
             <span class="menu-label"
     >
@@ -157,7 +157,7 @@
               <i class="pi pi-user"></i>
               <span>Users</span>
             </router-link>
-            <router-link to="/applications" class="nav-item" active-class="nav-item--active" @click="sidebarVisible = false">
+            <router-link to="/projects" class="nav-item" active-class="nav-item--active" @click="sidebarVisible = false">
               <i class="pi pi-th-large"></i>
               <span>Applications</span>
             </router-link>
