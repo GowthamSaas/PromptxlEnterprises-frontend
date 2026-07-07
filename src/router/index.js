@@ -65,12 +65,6 @@ const router = createRouter({
           component: () => import('../views/AdminsView.vue'),
           meta: { roles: ['owner'] }
         },
-        {
-          path: 'applications',
-          name: 'Applications',
-          component: () => import('../views/ApplicationsView.vue'),
-          meta: { roles: ['owner', 'admin'] }
-        },
          {
           path: 'projects',
           name: 'Projects',
@@ -78,10 +72,9 @@ const router = createRouter({
           meta: { roles: ['owner', 'admin'] }
         },
         {
-          path: 'assignments',
-          name: 'Assignments',
-          component: () => import('../views/AssignmentsView.vue'),
-          meta: { roles: ['owner', 'admin'] }
+          path: "project-assignments",
+          name: "ProjectAssignments",
+          component: () => import("../views/ProjectAssignmentsView.vue"),
         },
         {
           path: 'connectors',
@@ -115,7 +108,7 @@ const router = createRouter({
             {
               path: 'createapp',
               name: 'CreateApp',
-              component: () => import('../views/ai_workspace/CreateAppView.vue')
+              component: () => import('../views/ai_workspace/AIWorkspaceView.vue')
             },
             
             {

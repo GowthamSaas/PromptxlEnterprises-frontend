@@ -10,7 +10,7 @@
       <div class="hero-metrics" v-if="authStore.isUser">
         <div class="metric-card">
           <span>Assigned Apps</span>
-          <strong>{{ applications.length }}</strong>
+          <strong>{{ projects.length }}</strong>
         </div>
         <div class="metric-card">
           <span>Active Users</span>
@@ -27,20 +27,22 @@
       <div v-if="loading" class="loading">
         <ProgressSpinner />
       </div>
-      <div v-else-if="applications.length === 0" class="empty-state">
+      <div v-else-if="projects.length === 0" class="empty-state">
         <i class="pi pi-inbox" style="font-size: 48px; color: #cbd5e1"></i>
         <p>No applications assigned to you yet.</p>
       </div>
       <div v-else class="apps-grid">
         <div 
-          v-for="app in applications" 
-          :key="app.id" 
+          v-for="project in projects" 
+          :key="project.id" 
           class="app-card"
-          @click="launchApp(app)"
+          @click="openProject(project)"
         >
-          <img :src="app.icon_url" :alt="app.name" />
-          <h3>{{ app.name }}</h3>
-          <p>{{ app.description || 'No description' }}</p>
+          <div class="project-icon">
+  <i class="pi pi-folder-open"></i>
+</div>
+          <h3>{{ project.name }}</h3>
+          <p>{{ project.description || "No description" }}</p>
         </div>
       </div>
     </template>
@@ -99,18 +101,18 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
-import { useApplicationsStore } from '../stores/applications'
+import { useProjectAssignmentsStore } from '../stores/projectAssignments'
 import { useUsersStore } from '../stores/users'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import ProgressSpinner from 'primevue/progressspinner'
 
 const authStore = useAuthStore()
-const applicationsStore = useApplicationsStore()
+const projectAssignmentsStore = useProjectAssignmentsStore()
 const usersStore = useUsersStore()
 
 const loading = ref(false)
-const applications = computed(() => applicationsStore.applications)
+const projects = computed(() => projectAssignmentsStore.myProjects)
 
 const greeting = computed(() => {
   const hour = new Date().getHours()
@@ -125,27 +127,71 @@ const stats = computed(() => {
   return {
     users: users.filter(u => u.role === 'user').length,
     admins: users.filter(u => u.role === 'admin').length,
-    applications: applicationsStore.applications.length
+    applications: projectAssignmentsStore.myProjects.length
   }
 })
 
-function launchApp(app) {
-  window.open(app.launch_url, '_blank')
+function openProject(project) {
+
+  console.log(project)
+
+  // Later
+  // router.push(`/projects/${project.id}`)
+
 }
 
 onMounted(async () => {
   loading.value = true
+
   try {
-    await applicationsStore.fetchApplications()
-    if (!authStore.isUser) {
+
+    if (authStore.isUser) {
+
+      await projectAssignmentsStore.fetchMyProjects()
+
+    } else {
+
       await usersStore.fetchUsers()
+
     }
+
   } finally {
+
     loading.value = false
+
   }
+
 })
 </script>
 
 <style scoped>
+
+.project-icon{
+
+    width:70px;
+
+    height:70px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:var(--primary-50);
+
+    margin:0 auto 1rem;
+
+}
+
+.project-icon i{
+
+    font-size:2rem;
+
+    color:var(--primary-color);
+
+}
 /* Dashboard-specific overrides are now in main.css */
 </style>
