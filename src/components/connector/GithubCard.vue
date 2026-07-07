@@ -7,37 +7,73 @@
   >
     <!-- Connected Badge -->
     <template #actions>
-      <Tag
-        v-if="isConnected"
-        value="Connected"
-        severity="success"
-        rounded
-      />
-    </template>
+
+  <Tag
+    v-if="isConnected"
+    rounded
+    icon="pi pi-check"
+    value="Connected"
+    :pt="{
+      root:{
+        style:{
+          background:'#DCFCE7',
+          color:'#16A34A',
+          border:'none',
+          padding:'8px 16px',
+          fontWeight:'600',
+          fontSize:'15px',
+          borderRadius:'999px'
+        }
+      },
+      icon:{
+        style:{
+          fontSize:'13px',
+          marginRight:'6px'
+        }
+      }
+    }"
+  />
+
+  <Tag
+    v-else-if="isAdminView"
+    rounded
+    icon="pi pi-circle-fill"
+    value="Not Available"
+    :pt="{
+      root:{
+        style:{
+          background:'#FEE2E2',
+          color:'#DC2626',
+          border:'none',
+          padding:'8px 16px',
+          fontWeight:'600',
+          fontSize:'15px',
+          borderRadius:'999px'
+        }
+      },
+      icon:{
+        style:{
+          fontSize:'8px',
+          marginRight:'8px'
+        }
+      }
+    }"
+  />
+
+</template>
 
     <!-- ============================= -->
     <!-- ADMIN VIEW (Read Only) -->
     <!-- ============================= -->
-    <div v-if="isAdminView">
-      <Message v-if="isConnected" severity="info" :closable="false">
-        <div class="row row-between">
-          <div>
-            <strong>API Key Connected</strong>
-            <small class="row">GitHub API is ready to use by the owner</small>
-          </div>
-          <i class="pi pi-check-circle" style="font-size: 1.5rem; color: #22c55e;"></i>
-        </div>
-      </Message>
-      <Message v-else severity="secondary" :closable="false">
-        <div class="row row-between">
-          <div>
-            <strong>Not Connected</strong>
-            <small class="row">Owner has not connected a GitHub API key yet</small>
-          </div>
-          <i class="pi pi-info-circle" style="font-size: 1.5rem;"></i>
-        </div>
-      </Message>
-    </div>
+<div v-if="isAdminView">
+  <ConnectorStatus
+    :connected="isConnected"
+    provider="GitHub"
+    :connectedBy="connectedBy"
+    :connectedOn="connectedOn"
+    :lastUsed="lastUsed"
+  />
+</div>
 
     <!-- ============================= -->
     <!-- OWNER VIEW (Full Configuration) -->
@@ -58,7 +94,7 @@
             margin-bottom:8px;
           "
         >
-          GitHub Personal Access Token
+          GitHub Access Token
         </div>
 
         <!-- Token -->
@@ -70,7 +106,7 @@
 
           <Password
             v-model="token"
-            placeholder="Enter your GitHub token..."
+            placeholder="Enter your token..."
             toggleMask
             :feedback="false"
             fluid
@@ -81,7 +117,7 @@
         <!-- Connect Button -->
         <Button
           :label="localLoading ? 'Validating...' : 'Connect GitHub'"
-          :icon="localLoading ? '' : 'pi pi-github'"
+          :icon="localLoading ? '' : 'pi pi-check-circle'"
           :loading="localLoading"
           :disabled="localLoading"
           fluid
@@ -122,13 +158,13 @@
           </ol>
 
           <Button
-            label="Get API Key"
-            icon="pi pi-external-link"
-            link
-            as="a"
-            href="https://github.com/"
-            target="_blank"
-          />
+  label="Get API Key"
+  icon="pi pi-external-link"
+  link
+  as="a"
+  href="https://github.com/settings/tokens"
+  target="_blank"
+/>
 
         </Panel>
 
@@ -144,8 +180,8 @@
           style="
             background:#ECFDF5;
             border:1px solid #BBF7D0;
-            border-radius:14px;
-            padding:22px;
+            border-radius:16px;
+            padding:24px;
           "
         >
 
@@ -166,13 +202,13 @@
                   align-items:center;
                   gap:10px;
                   color:#166534;
-                  font-size:20px;
+                  font-size:22px;
                   font-weight:700;
                 "
               >
                 <i class="pi pi-check-circle"></i>
 
-                API Key Connected
+                GitHub Connected
               </div>
 
               <div
@@ -181,19 +217,26 @@
                   color:#166534;
                 "
               >
-                Your GitHub API is ready to use
+                Your GitHub account is connected and ready to use
               </div>
 
             </div>
 
             <Button
-              label="Disconnect"
-              icon="pi pi-trash"
-              text
-              severity="danger"
-              :loading="loading"
-              @click="disconnect"
-            />
+  label="Disconnect"
+  icon="pi pi-trash"
+  text
+  severity="danger"
+  :loading="loading"
+  @click="disconnect"
+  :pt="{
+    label:{
+      style:{
+        fontWeight:'600'
+      }
+    }
+  }"
+/>
 
           </div>
 
@@ -203,24 +246,12 @@
             style="
               display:flex;
               flex-direction:column;
-              gap:14px;
-              margin-top:22px;
+              gap:16px;
+              margin-top:24px;
             "
           >
 
-            <div
-              style="
-                display:flex;
-                align-items:center;
-                gap:10px;
-                color:#15803d;
-              "
-            >
-              <i class="pi pi-user"></i>
-
-              <span>{{ account }}</span>
-
-            </div>
+          
 
             <div
               style="
@@ -230,9 +261,9 @@
                 color:#15803d;
               "
             >
-              <i class="pi pi-github"></i>
+              <i class="pi pi-folder"></i>
 
-              <span>{{ repositories }} repositories available</span>
+               <span>{{ repositories }} repository(s) available</span>
 
             </div>
 
@@ -242,12 +273,12 @@
 
         <!-- Success Message -->
 
-        <Message
+        <!-- <Message
           severity="success"
           style="margin-top:22px"
         >
           Connected successfully! Account: {{ account }}
-        </Message>
+        </Message> -->
 
       </div>
     </template>
@@ -265,7 +296,7 @@ import Tag from 'primevue/tag'
 import Message from 'primevue/message'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
-
+import ConnectorStatus from './ConnectorStatus.vue'
 import ConnectorCard from './ConnectorCard.vue'
 
 import { useConnectorStore } from '../../stores/connector'
@@ -294,6 +325,18 @@ const account = computed(() => {
 
 const repositories = computed(() => {
   return connectorStore.connectors.github.repositories
+})
+
+const connectedBy = computed(() => {
+  return connectorStore.connectors.github.connectedBy
+})
+
+const connectedOn = computed(() => {
+  return connectorStore.connectors.github.connectedOn
+})
+
+const lastUsed = computed(() => {
+  return connectorStore.connectors.github.lastUsed
 })
 
 async function connect() {
