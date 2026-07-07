@@ -1,13 +1,8 @@
 <template>
   <div class="dashboard-layout">
-    
     <!-- ── Desktop Sidebar ── -->
     <aside
-    :class="[
-      'sidebar',
-      'desktop-sidebar',
-      { collapsed: sidebarCollapsed }
-    ]"
+      :class="['sidebar', 'desktop-sidebar', { collapsed: sidebarCollapsed }]"
     >
       <button
         class="collapse-btn"
@@ -19,96 +14,126 @@
       >
         <i
           class="pi"
-          :class="sidebarCollapsed ? 'pi-angle-right' : 'pi-angle-left'">
+          :class="sidebarCollapsed ? 'pi-angle-right' : 'pi-angle-left'"
+        >
         </i>
       </button>
-      <div
-      class="logo"
-      v-show="!sidebarCollapsed"
-      >
+      <div class="logo" v-show="!sidebarCollapsed">
         <div class="logo-text">
           <h2>PromptXL</h2>
           <span>Enterprise</span>
         </div>
       </div>
-      
+
       <nav class="nav-menu">
-        <router-link to="/" class="nav-item" exact-active-class="nav-item--active">
+        <router-link
+          to="/"
+          class="nav-item"
+          exact-active-class="nav-item--active"
+        >
           <i class="pi pi-home"></i>
-          <span class="menu-label"
-    >
-            Dashboard
-          </span>
+          <span class="menu-label"> Dashboard </span>
         </router-link>
-        
+
         <template v-if="authStore.isOwner">
-          <router-link to="/admins" class="nav-item" active-class="nav-item--active">
+          <router-link
+            to="/admins"
+            class="nav-item"
+            active-class="nav-item--active"
+          >
             <i class="pi pi-users"></i>
-            <span class="menu-label"
-    >
-              Admins
-            </span>
+            <span class="menu-label"> Admins </span>
           </router-link>
         </template>
-        
+
         <template v-if="authStore.isOwner || authStore.isAdmin">
-          <router-link to="/users" class="nav-item" active-class="nav-item--active">
+          <router-link
+            to="/users"
+            class="nav-item"
+            active-class="nav-item--active"
+          >
             <i class="pi pi-user"></i>
-            <span class="menu-label"
-    >
-              Users
-            </span>
+            <span class="menu-label"> Users </span>
           </router-link>
-          <router-link to="/projects" class="nav-item" active-class="nav-item--active">
+          <router-link
+            to="/projects"
+            class="nav-item"
+            active-class="nav-item--active"
+          >
             <i class="pi pi-th-large"></i>
-            <span class="menu-label"
-    >
-              Applications
-            </span>
+            <span class="menu-label"> Applications </span>
           </router-link>
-          <router-link to="/assignments" class="nav-item" active-class="nav-item--active">
+          <router-link
+            to="/assignments"
+            class="nav-item"
+            active-class="nav-item--active"
+          >
             <i class="pi pi-link"></i>
-            <span class="menu-label"
-    >
-              Assignments
-            </span>
+            <span class="menu-label"> Assignments </span>
           </router-link>
-          <router-link to="/create-app/guide" class="nav-item" active-class="nav-item--active">
+          <router-link
+            to="/create-app/guide"
+            class="nav-item"
+            active-class="nav-item--active"
+          >
             <i class="pi pi-plus-circle"></i>
-            <span class="menu-label"
-    >
-              Create Custom App
-            </span>
+            <span class="menu-label"> Create Custom App </span>
           </router-link>
         </template>
       </nav>
-      
-      <div class="user-block" @click="goToProfile">
-        <div class="user-avatar">
-          <i class="pi pi-user"></i>
+
+      <div class="user-wrapper" ref="userWrapper">
+        <div
+          class="user-block"
+          @click="
+            sidebarCollapsed ? (showUserMenu = !showUserMenu) : goToProfile()
+          "
+        >
+          <div class="user-avatar">
+            <i class="pi pi-user"></i>
+          </div>
+
+          <div class="user-info" v-show="!sidebarCollapsed">
+            <strong>{{ authStore.user?.full_name?.split(" ")[0] }}</strong>
+            <span class="role-badge">{{ authStore.user?.role }}</span>
+          </div>
+
+          <Button
+            v-if="!sidebarCollapsed"
+            icon="pi pi-sign-out"
+            text
+            rounded
+            class="logout-btn"
+            @click.stop="logout"
+          />
         </div>
-        <div class="user-info">
-          <strong>{{ authStore.user?.full_name?.split(' ')[0] }}</strong>
-          <span class="role-badge">{{ authStore.user?.role }}</span>
+
+        <div v-if="sidebarCollapsed && showUserMenu" class="user-popup">
+          <button @click="goToProfile">
+            <i class="pi pi-user"></i>
+            Profile
+          </button>
+
+          <button @click="logout">
+            <i class="pi pi-sign-out"></i>
+            Logout
+          </button>
         </div>
-        <Button 
-          icon="pi pi-sign-out" 
-          text 
-          rounded 
-          class="logout-btn" 
-          @click.stop="logout" 
-          v-tooltip.top="'Sign Out'"
-        />
       </div>
     </aside>
 
     <!-- ── Right column: toolbar (mobile only) + main content ── -->
     <div class="content-col" :class="{ expanded: sidebarCollapsed }">
-
       <!-- Mobile top bar -->
       <Toolbar class="mobile-toolbar">
         <template #start>
-          <Button icon="pi pi-bars" text rounded @click="sidebarVisible = true" class="mobile-menu-btn" />
+          <Button
+            icon="pi pi-bars"
+            text
+            rounded
+            @click="sidebarVisible = true"
+            class="mobile-menu-btn"
+          />
           <div class="mobile-brand">
             <span class="mobile-title">PromptXL</span>
             <span class="mobile-badge">Enterprise</span>
@@ -127,60 +152,98 @@
       >
         <template #header>
           <div class="sa-drawer-header-custom">
-             <Button icon="pi pi-times" text rounded class="sa-drawer-close" aria-label="Close" @click="sidebarVisible = false" />
+            <Button
+              icon="pi pi-times"
+              text
+              rounded
+              class="sa-drawer-close"
+              aria-label="Close"
+              @click="sidebarVisible = false"
+            />
           </div>
         </template>
 
-        <div class="logo" :class="{ collapsed: sidebarCollapsed }">
-          <div v-if="!sidebarCollapsed" class="logo-text">
-            <h2>PromptXL</h2>
-            <span>Enterprise</span>
-          </div>
-          <!-- <i class="pi pi-bars sidebar-logo"></i> -->
-        </div>
-        
         <nav class="nav-menu">
-          <router-link to="/" class="nav-item" exact-active-class="nav-item--active" @click="sidebarVisible = false">
+          <router-link
+            to="/"
+            class="nav-item"
+            exact-active-class="nav-item--active"
+            @click="sidebarVisible = false"
+          >
             <i class="pi pi-home"></i>
             <span>Dashboard</span>
           </router-link>
-          
+
           <template v-if="authStore.isOwner">
-            <router-link to="/admins" class="nav-item" active-class="nav-item--active" @click="sidebarVisible = false">
+            <router-link
+              to="/admins"
+              class="nav-item"
+              active-class="nav-item--active"
+              @click="sidebarVisible = false"
+            >
               <i class="pi pi-users"></i>
               <span>Admins</span>
             </router-link>
           </template>
-          
+
           <template v-if="authStore.isOwner || authStore.isAdmin">
-            <router-link to="/users" class="nav-item" active-class="nav-item--active" @click="sidebarVisible = false">
+            <router-link
+              to="/users"
+              class="nav-item"
+              active-class="nav-item--active"
+              @click="sidebarVisible = false"
+            >
               <i class="pi pi-user"></i>
               <span>Users</span>
             </router-link>
-            <router-link to="/projects" class="nav-item" active-class="nav-item--active" @click="sidebarVisible = false">
+            <router-link
+              to="/projects"
+              class="nav-item"
+              active-class="nav-item--active"
+              @click="sidebarVisible = false"
+            >
               <i class="pi pi-th-large"></i>
               <span>Applications</span>
             </router-link>
-            <router-link to="/assignments" class="nav-item" active-class="nav-item--active" @click="sidebarVisible = false">
+            <router-link
+              to="/assignments"
+              class="nav-item"
+              active-class="nav-item--active"
+              @click="sidebarVisible = false"
+            >
               <i class="pi pi-link"></i>
               <span>Assignments</span>
             </router-link>
-            <router-link to="/create-app/guide" class="nav-item" active-class="nav-item--active" @click="sidebarVisible = false">
+            <router-link
+              to="/create-app/guide"
+              class="nav-item"
+              active-class="nav-item--active"
+              @click="sidebarVisible = false"
+            >
               <i class="pi pi-plus-circle"></i>
               <span>Create Custom App</span>
             </router-link>
           </template>
         </nav>
-        
-        <div class="user-block"  :class="{ collapsed: sidebarCollapsed }" @click="goToProfile" >
-          <div class="user-avatar">
-            <i class="pi pi-user"></i>
+        <div class="mobile-user-wrapper">
+          <div class="user-block" @click="goToProfile">
+            <div class="user-avatar">
+              <i class="pi pi-user"></i>
+            </div>
+
+            <div class="user-info">
+              <strong>{{ authStore.user?.full_name?.split(" ")[0] }}</strong>
+              <span class="role-badge">{{ authStore.user?.role }}</span>
+            </div>
+
+            <Button
+              icon="pi pi-sign-out"
+              text
+              rounded
+              class="logout-btn"
+              @click.stop="logout"
+            />
           </div>
-          <div class="user-info" v-show="!sidebarCollapsed">
-            <strong>{{ authStore.user?.full_name?.split(' ')[0] }}</strong>
-            <span class="role-badge">{{ authStore.user?.role }}</span>
-          </div>
-          <Button icon="pi pi-sign-out" text rounded class="logout-btn" @click.stop="logout" v-tooltip.top="'Sign Out'" />
         </div>
       </Drawer>
 
@@ -188,40 +251,68 @@
       <main class="main-content">
         <router-view />
       </main>
-
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
-import Button from 'primevue/button'
-import Toolbar from 'primevue/toolbar'
-import Drawer from 'primevue/drawer'
+import { ref } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { useAuthStore } from "../stores/auth";
+import Button from "primevue/button";
+import Toolbar from "primevue/toolbar";
+import Drawer from "primevue/drawer";
+import { watch } from "vue";
+import { onMounted, onBeforeUnmount } from "vue";
 
-
-
-const sidebarCollapsed = ref(false)
+const sidebarCollapsed = ref(false);
 const toggleSidebar = () => {
-  sidebarCollapsed.value = !sidebarCollapsed.value
-}
+  sidebarCollapsed.value = !sidebarCollapsed.value;
+};
 
-const router = useRouter()
-const authStore = useAuthStore()
-const sidebarVisible = ref(false)
+const router = useRouter();
+const route = useRoute();
+const authStore = useAuthStore();
+const sidebarVisible = ref(false);
+const showUserMenu = ref(false);
+
+watch(
+  () => route.fullPath,
+  () => {
+    showUserMenu.value = false;
+  },
+);
 
 function goToProfile() {
-  sidebarVisible.value = false
-  router.push('/profile')
+  showUserMenu.value = false;
+  sidebarVisible.value = false;
+  router.push("/profile");
 }
-
 function logout() {
-  sidebarVisible.value = false
-  authStore.logout()
-  router.push('/login')
+  showUserMenu.value = false;
+  sidebarVisible.value = false;
+
+  authStore.logout();
+  router.push("/login");
 }
+const userWrapper = ref(null);
+
+const handleClickOutside = (event) => {
+  if (
+    showUserMenu.value &&
+    userWrapper.value &&
+    !userWrapper.value.contains(event.target)
+  ) {
+    showUserMenu.value = false;
+  }
+};
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <style scoped>
@@ -241,23 +332,23 @@ function logout() {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  padding: 24px 16px;
+  padding: 24px 10px 24px 10px;
   box-sizing: border-box;
-  overflow-y: hidden;
+  overflow-y: visible;
   z-index: 100;
   background: linear-gradient(175deg, #1e1b4b 0%, #312e81 55%, #4338ca 100%);
   color: #eff6ff;
   box-shadow: 4px 0 24px rgba(15, 23, 42, 0.18);
   border-radius: 0%;
-  transition:width .25s ease;
-  position:relative;
+  transition: width 0.25s ease;
+  position: relative;
 }
-.menu-label{
-    transition:all .2s;
+.menu-label {
+  transition: all 0.2s;
 }
 
-.sidebar.collapsed .menu-label{
-    display:none;
+.sidebar.collapsed .menu-label {
+  display: none;
 }
 
 /* ── Collapsed Sidebar ── */
@@ -266,11 +357,11 @@ function logout() {
   /* position:relative;
   top: -10px;
   right: 1px; */
-  width: 42px;
+  width: 48px;
   height: 42px;
   border: none;
   border-radius: 14px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -278,15 +369,18 @@ function logout() {
   cursor: pointer;
   z-index: 1100;
   box-shadow: 0 14px 35px rgba(33, 33, 122, 0.18);
-  transition: transform 0.18s ease, right 0.2s ease, background 0.18s ease;
-  border: 1px solid rgba(255,255,255,0.14);
+  transition:
+    transform 0.18s ease,
+    right 0.2s ease,
+    background 0.18s ease;
+  border: 1px solid rgba(255, 255, 255, 0.14);
   padding: 0;
   margin-bottom: 10px;
 }
 
 .collapse-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(99,102,241,0.18);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.18);
 }
 
 .collapse-btn .pi {
@@ -297,7 +391,7 @@ function logout() {
 .sidebar.collapsed .collapse-btn {
   right: -18px;
   color: #fff;
-  border-color: rgba(255,255,255,0.2);
+  border-color: rgba(255, 255, 255, 0.2);
   box-shadow: 0 18px 42px rgba(29, 78, 216, 0.24);
 }
 
@@ -305,59 +399,58 @@ function logout() {
   transform: translateY(-1px) scale(1.04);
 }
 
-.sidebar.collapsed{
-    width:72px;
+.sidebar.collapsed {
+  width: 72px;
 }
-.sidebar.collapsed .nav-item span{
-    display:none;
+.sidebar.collapsed .nav-item span {
+  display: none;
 }
-.sidebar.collapsed .nav-item{
-    width:48px;
-    height:48px;
-    margin:0 auto;
-    padding:0;
+.sidebar.collapsed .nav-item {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto;
+  padding: 0;
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    border-radius:14px;
+  border-radius: 14px;
 }
-.sidebar.collapsed .logo{
-    background:transparent;
-    border:none;
-    padding:0;
-    margin-bottom:24px;
-    display:flex;
-    justify-content:center;
+.sidebar.collapsed .logo {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
 }
 .sidebar.collapsed .user-info,
-.sidebar.collapsed .logout-btn{
-    display:none;
+.sidebar.collapsed .logout-btn {
+  display: none;
 }
-.sidebar.collapsed .user-block{
-    width:48px;
-    height:48px;
-    padding:0;
-    margin:16px auto;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-
-.sidebar.collapsed .nav-item{
-    justify-content:center;
-    padding:14px 0;
+.sidebar.collapsed .user-block {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  margin: 16px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.sidebar.collapsed .nav-item .pi{
-    margin:0;
-    font-size:20px;
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 14px 0;
 }
 
-.sidebar.collapsed .logout-btn{
-    display:none;
+.sidebar.collapsed .nav-item .pi {
+  margin: 0;
+  font-size: 20px;
+}
+
+.sidebar.collapsed .logout-btn {
+  display: none;
 }
 /* ── Right column (grows to fill remaining width) ── */
 .content-col {
@@ -368,8 +461,8 @@ function logout() {
   flex-direction: column;
   overflow-x: hidden;
 }
-.content-col{
-    transition:margin .28s ease;
+.content-col {
+  transition: margin 0.28s ease;
 }
 
 /* ── Main scrollable area ── */
@@ -390,8 +483,8 @@ function logout() {
   margin-bottom: 24px;
   padding: 16px;
   border-radius: 16px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .logo-text h2 {
@@ -405,15 +498,15 @@ function logout() {
   margin-top: 8px;
   font-size: 12px;
   font-weight: 600;
-  color: rgba(229,231,235,0.9);
+  color: rgba(229, 231, 235, 0.9);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
-.sidebar-logo{
-    width:28px;
-    height:28px;
-    color:#ffffff;
+.sidebar-logo {
+  width: 28px;
+  height: 28px;
+  color: #ffffff;
 }
 
 .nav-menu {
@@ -429,24 +522,30 @@ function logout() {
   gap: 14px;
   padding: 14px 16px;
   border-radius: 12px;
-  color: rgba(226,232,240,0.95);
+  color: rgba(226, 232, 240, 0.95);
   text-decoration: none;
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
   font-size: 0.95rem;
   font-weight: 500;
-  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
-.nav-item .pi { font-size: 1.1rem; flex-shrink: 0; }
+.nav-item .pi {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
 
 .nav-item:hover {
   transform: translateX(3px);
-  background: rgba(255,255,255,0.14);
+  background: rgba(255, 255, 255, 0.14);
   color: white;
 }
 
 .nav-item--active {
-  background: rgba(255,255,255,0.18) !important;
+  background: rgba(255, 255, 255, 0.18) !important;
   color: #ffffff !important;
   font-weight: 600;
 }
@@ -539,6 +638,47 @@ function logout() {
   max-width: 280px;
 }
 
+.user-wrapper {
+  position: relative;
+  margin-top: auto;
+}
+
+.user-popup {
+  position: absolute;
+  left: 70px;
+  bottom: 10px;
+
+  width: 120px;
+
+  background: #2b2b6d;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+  z-index: 99999;
+}
+
+.user-popup button {
+  width: 100%;
+  border: none;
+  background: none;
+
+  padding: 14px 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  cursor: pointer;
+  font-size: 14px;
+  color: white;
+}
+
+.user-popup button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
 @media (max-width: 1024px) {
   .sidebar.desktop-sidebar {
     display: none;
@@ -555,8 +695,6 @@ function logout() {
   .content-col {
     width: 100%;
   }
-
- 
 }
 
 @media (max-width: 640px) {
@@ -569,7 +707,9 @@ function logout() {
   flex: 1;
   height: 100vh;
   overflow-y: auto;
-  padding: 28px 32px;
-  .main-content { padding: 12px; }
+  /* padding: 28px 32px; */
+  .main-content {
+    padding: 12px;
+  }
 }
 </style>

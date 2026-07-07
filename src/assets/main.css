@@ -64,7 +64,7 @@ img, svg, video {
 ───────────────────────────────────────────── */
 .management-page {
   padding: 28px;
-  border-radius: var(--radius-page);
+  /* border-radius: var(--radius-page); */
   background: var(--clr-surface-dim);
   border: 1px solid var(--clr-primary-border);
   box-shadow: var(--shadow-page);

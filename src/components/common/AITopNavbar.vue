@@ -72,7 +72,7 @@ function goTo(path) {
   align-items: center;
   padding: 16px 20px;
   margin-bottom: 20px;
-  border-radius: 16px;
+  /* border-radius: 16px; */
   background: #ffffff;
   border: 1px solid #e2e8f0;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
