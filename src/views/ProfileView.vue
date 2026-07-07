@@ -69,11 +69,11 @@
           </div>
 
           <div class="buttons">
-            <Button
+            <!-- <Button
               label="Edit Profile"
               icon="pi pi-pencil"
               outlined
-            />
+            /> -->
 
             <Button
             label="Change Password"
