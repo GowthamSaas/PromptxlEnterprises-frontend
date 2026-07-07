@@ -30,4 +30,16 @@ const cardComponent = computed(() => {
   if (props.provider.key === 'minimax') return MinimaxCard
   return OpenAICard
 })
+import { watchEffect } from 'vue'
+
+
+
+watchEffect(() => {
+  console.log('----------------------')
+  console.log('key:', props.provider.key)
+  console.log('connected:', props.provider.connected)
+  console.log('ownerConnected:', props.provider.ownerConnected)
+  console.log('connectedBy:', props.provider.connectedBy)
+  console.log(props.provider)
+})
 </script>

@@ -11,14 +11,59 @@
     <!-- Connected Badge -->
     <template #actions>
 
+  <!-- Connected -->
   <Tag
     v-if="isConnected"
-    value="Connected"
-    severity="success"
     rounded
+    icon="pi pi-check"
+    value="Connected"
+    :pt="{
+      root:{
+        style:{
+          background:'#DCFCE7',
+          color:'#16A34A',
+          border:'none',
+          padding:'8px 16px',
+          fontWeight:'600',
+          fontSize:'15px',
+          borderRadius:'999px'
+        }
+      },
+      icon:{
+        style:{
+          fontSize:'13px',
+          marginRight:'6px'
+        }
+      }
+    }"
   />
 
- 
+  <!-- Not Connected -->
+  <Tag
+    v-else-if="isAdminView"
+    rounded
+    icon="pi pi-circle-fill"
+    value="Not Available"
+    :pt="{
+      root:{
+        style:{
+          background:'#FEE2E2',
+          color:'#DC2626',
+          border:'none',
+          padding:'8px 16px',
+          fontWeight:'600',
+          fontSize:'15px',
+          borderRadius:'999px'
+        }
+      },
+      icon:{
+        style:{
+          fontSize:'8px',
+          marginRight:'8px'
+        }
+      }
+    }"
+  />
 
 </template>
 
@@ -217,6 +262,7 @@
               margin-top:22px;
             "
           >
+           
             <div
               style="
                 display:flex;
@@ -226,7 +272,7 @@
               "
             >
               <i class="pi pi-cloud"></i>
-              <!-- <span>{{ project }}</span> -->
+              
               <span>{{ teams }} team(s) available</span>
 
             </div>
@@ -294,6 +340,7 @@ const connectedOn = computed(() => {
 const lastUsed = computed(() => {
   return connectorStore.connectors.vercel.lastUsed
 })
+
 
 
 async function connect() {

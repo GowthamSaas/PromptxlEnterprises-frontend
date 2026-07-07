@@ -9,6 +9,18 @@
       @disconnect="$emit('disconnect', $event)"
     />
   </div>
+  <div v-for="provider in providers" :key="provider.key">
+  {{ provider.key }}
+  {{ provider.ownerConnected }}
+  {{ provider.connected }}
+
+  <ProviderCard
+    :provider="provider"
+    :loading="loading"
+    @connect="$emit('connect', $event)"
+    @disconnect="$emit('disconnect', $event)"
+  />
+</div>
 </template>
 
 <script setup>

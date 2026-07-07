@@ -1,5 +1,5 @@
 <script setup>
-import { siSupabase } from 'simple-icons'
+import { siGithub } from 'simple-icons'
 </script>
 
 <template>
@@ -9,7 +9,7 @@ import { siSupabase } from 'simple-icons'
     height="68"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <!-- Black rounded background -->
+    <!-- rounded square -->
     <rect
       x="0"
       y="0"
@@ -19,13 +19,12 @@ import { siSupabase } from 'simple-icons'
       fill="#111111"
     />
 
-    <!-- Green Supabase logo -->
-    <path
-      
-      :d="siSupabase.path"
-      fill="#3ECF8E"
-      transform="translate(2.2 2.2) scale(0.82)"
-      
-    />
+    <!-- github -->
+    <g transform="translate(2.5 2.5) scale(0.79)">
+      <path
+        :d="siGithub.path"
+        fill="#FFFFFF"
+      />
+    </g>
   </svg>
 </template>

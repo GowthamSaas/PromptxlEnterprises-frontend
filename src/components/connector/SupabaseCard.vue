@@ -2,42 +2,80 @@
   <ConnectorCard
     title="Supabase"
     description="Connect your Supabase account"
-    icon="pi pi-supabase"
     iconBackground="#22C55E"
-  >
+>
+<template #icon>
+    <SupabaseIcon />
+</template>
     <!-- Connected Badge -->
-    <template #actions>
-      <Tag
-        v-if="isConnected"
-        value="Connected"
-        severity="success"
-        rounded
-      />
-    </template>
+   <template #actions>
+
+  <Tag
+    v-if="isConnected"
+    rounded
+    icon="pi pi-check"
+    value="Connected"
+    :pt="{
+      root:{
+        style:{
+          background:'#DCFCE7',
+          color:'#16A34A',
+          border:'none',
+          padding:'8px 16px',
+          fontWeight:'600',
+          fontSize:'15px',
+          borderRadius:'999px'
+        }
+      },
+      icon:{
+        style:{
+          fontSize:'13px',
+          marginRight:'6px'
+        }
+      }
+    }"
+  />
+
+  <Tag
+    v-else-if="isAdminView"
+    rounded
+    icon="pi pi-circle-fill"
+    value="Not Available"
+    :pt="{
+      root:{
+        style:{
+          background:'#FEE2E2',
+          color:'#DC2626',
+          border:'none',
+          padding:'8px 16px',
+          fontWeight:'600',
+          fontSize:'15px',
+          borderRadius:'999px'
+        }
+      },
+      icon:{
+        style:{
+          fontSize:'8px',
+          marginRight:'8px'
+        }
+      }
+    }"
+  />
+
+</template>
 
     <!-- ============================= -->
     <!-- ADMIN VIEW (Read Only) -->
     <!-- ============================= -->
     <div v-if="isAdminView">
-      <Message v-if="isConnected" severity="info" :closable="false">
-        <div class="row row-between">
-          <div>
-            <strong>API Key Connected</strong>
-            <small class="row">Supabase API is ready to use by the owner</small>
-          </div>
-          <i class="pi pi-check-circle" style="font-size: 1.5rem; color: #22c55e;"></i>
-        </div>
-      </Message>
-      <Message v-else severity="secondary" :closable="false">
-        <div class="row row-between">
-          <div>
-            <strong>Not Connected</strong>
-            <small class="row">Owner has not connected a Supabase API key yet</small>
-          </div>
-          <i class="pi pi-info-circle" style="font-size: 1.5rem;"></i>
-        </div>
-      </Message>
-    </div>
+  <ConnectorStatus
+    :connected="isConnected"
+    provider="Supabase"
+    :connectedBy="connectedBy"
+    :connectedOn="connectedOn"
+    :lastUsed="lastUsed"
+  />
+</div>
 
     <!-- ============================= -->
     <!-- OWNER VIEW (Full Configuration) -->
@@ -165,8 +203,8 @@
                   align-items:center;
                   gap:10px;
                   color:#166534;
-                  font-size:20px;
-                  font-weight:700;
+                  font-size:18px;
+                  font-weight:600;
                 "
               >
                 <i class="pi pi-check-circle"></i>
@@ -206,7 +244,7 @@
               margin-top:22px;
             "
           >
-
+           
             <div
               style="
                 display:flex;
@@ -215,20 +253,7 @@
                 color:#15803d;
               "
             >
-              <i class="pi pi-supabase"></i>
-
-              <span>{{ project }}</span>
-
-            </div>
-
-            <div
-              style="
-                display:flex;
-                align-items:center;
-                gap:10px;
-                color:#15803d;
-              "
-            >
+              
               <i class="pi pi-server"></i>
 
               <span>{{ tables }} table(s) available</span>
@@ -243,12 +268,7 @@
 
       <!-- Bottom Success Message -->
 
-      <Message
-        severity="success"
-        style="margin-top:22px"
-      >
-        Connected successfully! Project: {{ project }}
-      </Message>
+     
       </div>
     </template>
     <!-- End Owner View -->
@@ -268,7 +288,7 @@ import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 import SupabaseIcon from '../icons/SupabaseIcon.vue'
 import ConnectorCard from './ConnectorCard.vue'
-
+import ConnectorStatus from './ConnectorStatus.vue'
 import { useConnectorStore } from '../../stores/connector'
 import { useAuthStore } from '../../stores/auth'
 import { useToast } from 'primevue/usetoast'
@@ -296,6 +316,18 @@ const project = computed(() => {
 
 const tables = computed(() => {
   return connectorStore.connectors.supabase.tables
+})
+
+const connectedBy = computed(() => {
+  return connectorStore.connectors.supabase.connectedBy
+})
+
+const connectedOn = computed(() => {
+  return connectorStore.connectors.supabase.connectedOn
+})
+
+const lastUsed = computed(() => {
+  return connectorStore.connectors.supabase.lastUsed
 })
 
 async function connect() {

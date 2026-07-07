@@ -18,43 +18,57 @@
     <template #content>
 
       <!-- Header -->
-      <div
-        style="
-          display:flex;
-          justify-content:space-between;
-          align-items:flex-start;
-          margin-bottom:22px;
-        "
-      >
+     <div
+  style="
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:28px;
+  "
+>
         <!-- Left Side -->
         <div
           style="
             display:flex;
             align-items:center;
-            gap:20px;
+            gap:18px;
             flex:1;
           "
         >
           <!-- Icon -->
-          <div
-            v-if="icon || $slots.icon"
-            style="
-              width:56px;
-              height:56px;
-              border-radius:16px;
-              background:iconBackground;
-              color:#fff;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              overflow:hidden;
-              flex-shrink:0;
-            "
-          >
-            <slot v-if="$slots.icon" name="icon" />
-            <i v-else :class="icon" style="font-size:20px" />
-          </div>
+          <!-- Icon -->
+<div
+  v-if="icon || $slots.icon"
+  :style="{
+    width: '68px',
+    height: '68px',
+    borderRadius: '18px',
 
+    background: $slots.icon ? '#FFFFFF' : iconBackground,
+
+    border: $slots.icon ? '1px solid #E5E7EB' : 'none',
+
+    color: $slots.icon ? '#111827' : '#FFFFFF',
+
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    boxShadow: $slots.icon
+      ? '0 2px 8px rgba(15,23,42,0.05)'
+      : 'none',
+
+    flexShrink: 0
+  }"
+>
+  <slot v-if="$slots.icon" name="icon" />
+
+  <i
+    v-else
+    :class="icon"
+    style="font-size:22px"
+  />
+</div>
           <!-- Title & Description -->
           <div style="flex:1">
             <div
@@ -67,9 +81,10 @@
             >
               <div
                 style="
-                  font-size:25px;
-                  font-weight:700;
-                  color:#111827;
+                 font-size:22px;
+font-weight:700;
+line-height:1.2;
+color:#111827;
                 "
               >
                 {{ title }}
@@ -81,8 +96,9 @@
 
             <div
               style="
-                color:#6B7280;
-                font-size:15px;
+                color:#64748B;
+font-size:16px;
+line-height:1.5;
               "
             >
               {{ description }}
@@ -101,7 +117,7 @@
           <slot name="actions"></slot>
         </div>
       </div>
-     <Divider style="margin:24px 0" />
+     <Divider style="margin:26px 0 30px 0" />
       <!-- Body -->
       <slot />
 
