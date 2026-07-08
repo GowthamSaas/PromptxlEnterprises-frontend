@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, provide } from "vue";
+import { ref, computed, watch, provide, onMounted, onUnmounted } from "vue";
 
 import MonacoEditor from "@guolao/vue-monaco-editor";
 
@@ -43,6 +43,37 @@ const projectFilesStore = useProjectFilesStore();
 
 const content = ref("");
 provide("editorContent", content);
+
+// Keyboard shortcut for Ctrl+S to save
+async function handleKeyboardSave(event) {
+  if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+    event.preventDefault();
+    if (currentFile.value) {
+      await saveFile();
+    }
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("keydown", handleKeyboardSave);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("keydown", handleKeyboardSave);
+});
+
+async function saveFile() {
+  if (!currentFile.value) return;
+  try {
+    await projectFilesStore.saveFile(
+      currentFile.value.id,
+      content.value
+    );
+    console.log("File saved!");
+  } catch (error) {
+    console.error("Failed to save:", error);
+  }
+}
 
 const currentFile = computed(() => {
   return projectFilesStore.currentFile;

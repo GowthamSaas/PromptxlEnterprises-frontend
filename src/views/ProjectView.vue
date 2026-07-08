@@ -85,11 +85,12 @@ onMounted(async () => {
 });
 
 function openProject(project) {
-
-  console.log(project);
-
-  // Explorer page later
-
+  router.push({
+    name: "CreateApp",
+    query: {
+      id: project.id,
+    },
+  });
 }
 
 function openEditDialog(project) {

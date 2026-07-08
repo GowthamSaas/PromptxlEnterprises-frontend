@@ -9,13 +9,39 @@
         <span>Explorer</span>
       </div>
 
-      <Button
-        icon="pi pi-refresh"
-        text
-        rounded
-        severity="secondary"
-        @click="refreshExplorer"
-      />
+      <div class="header-actions">
+        
+        <!-- New File Button -->
+        <Button
+          icon="pi pi-file"
+          text
+          rounded
+          severity="secondary"
+          v-tooltip.top="'New File'"
+          @click="openCreateDialog"
+        />
+
+        <!-- New Folder Button -->
+        <Button
+          icon="pi pi-folder"
+          text
+          rounded
+          severity="secondary"
+          v-tooltip.top="'New Folder'"
+          @click="openCreateFolderDialog"
+        />
+
+        <!-- Collapse/Refresh -->
+        <Button
+          icon="pi pi-refresh"
+          text
+          rounded
+          severity="secondary"
+          v-tooltip.top="'Refresh'"
+          @click="refreshExplorer"
+        />
+
+      </div>
 
     </div>
 
@@ -101,6 +127,8 @@ const renameDialog = ref();
 const deleteDialog = ref();
 
 const selectedNode = ref(null);
+
+const selectedFolderPath = ref("");
 
 const treeNodes = computed(() => {
 
@@ -216,13 +244,25 @@ async function createFile(data) {
 
     if (!projectId) return;
 
-    await projectFilesStore.createFile({
+    // Build the full path using selected folder
+    const fullPath = selectedFolderPath.value
+      ? `${selectedFolderPath.value}/${data.name}`
+      : data.name;
+
+    // Only create files, not folders (backend limitation)
+    if (data.isFolder) {
+      // For folders, just refresh the tree (backend would need separate endpoint)
+      await refreshExplorer();
+      return;
+    }
+
+    const newFile = await projectFilesStore.createFile({
 
       project_id: projectId,
 
       file_name: data.name,
 
-      file_path: data.name,
+      file_path: fullPath,
 
       language: data.language,
 
@@ -231,6 +271,11 @@ async function createFile(data) {
     });
 
     await refreshExplorer();
+
+    // Automatically open the newly created file
+    if (newFile && newFile.id) {
+      await projectFilesStore.openFile(newFile.id);
+    }
 
   } catch (error) {
 
@@ -283,7 +328,20 @@ function onRightClick(event, node) {
 
   selectedNode.value = node.data;
 
-  contextMenu.value.show(event);
+  // Store the selected folder path for creating new items
+  if (node.data.type === "folder") {
+    selectedFolderPath.value = node.data.file_path || node.data.path || "";
+  } else {
+    // For files, get the parent folder path
+    const filePath = node.data.file_path || node.data.path || "";
+    const lastSlash = Math.max(filePath.lastIndexOf("/"), filePath.lastIndexOf("\\"));
+    selectedFolderPath.value = lastSlash > 0 ? filePath.substring(0, lastSlash) : "";
+  }
+
+  // Pass the node type to context menu (file, folder, or root)
+  const nodeType = node.data.type || "folder";
+
+  contextMenu.value.show(event, nodeType);
 
 }
 
@@ -357,6 +415,16 @@ align-items:center;
 gap:10px;
 
 font-weight:600;
+
+}
+
+.header-actions{
+
+display:flex;
+
+align-items:center;
+
+gap:4px;
 
 }
 

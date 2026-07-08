@@ -22,6 +22,7 @@
         rounded
         severity="secondary"
         size="small"
+        @click="closeCurrentFile"
       />
 
     </div>
@@ -79,6 +80,12 @@ const fileIcon = computed(() => {
   }
 
 });
+
+function closeCurrentFile() {
+
+  projectFilesStore.closeFile();
+
+}
 </script>
 
 <style scoped>

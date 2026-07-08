@@ -16,6 +16,9 @@
 </template>
 
 <script setup>
+import InputText from "primevue/inputtext";
+import IconField from "primevue/iconfield";
+import InputIcon from "primevue/inputicon";
 defineProps({
   modelValue: {
     type: String,

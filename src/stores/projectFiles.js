@@ -220,6 +220,13 @@ async saveFile(fileId, content) {
         );
       },
 
+      // Close File
+      closeFile() {
+
+        this.currentFile = null;
+
+      },
+
       clear() {
 
   this.currentProjectId = null;
