@@ -84,7 +84,7 @@ import { ref, computed, onMounted } from "vue";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import Select from "primevue/select";
-
+import { useRoute } from "vue-router";
 import { useLLMStore } from "../../stores/llm";
 import { useGenerateStore } from "../../stores/generate";
 import { useProjectStore } from "../../stores/project";
@@ -163,9 +163,38 @@ if (firstFile) {
 
 }
 
+
+
+const route = useRoute();
 onMounted(async () => {
 
   await llmStore.fetchProviders();
+
+  const projectId = route.query.id;
+
+  if (!projectId) return;
+
+  // Load Project
+  await projectStore.fetchProject(projectId);
+
+  // Fill Prompt Panel
+  prompt.value = projectStore.currentProject.prompt;
+  selectedProvider.value = projectStore.currentProject.provider;
+
+  await llmStore.fetchModels(selectedProvider.value);
+
+  selectedModel.value = projectStore.currentProject.model;
+
+  // Load Explorer
+  await projectFilesStore.fetchTree(projectId);
+
+  const firstFile = projectFilesStore.findFirstFile();
+
+  if (firstFile) {
+
+    await projectFilesStore.openFile(firstFile.id);
+
+  }
 
 });
 </script>
