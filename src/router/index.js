@@ -128,30 +128,7 @@ const router = createRouter({
             },
           ],
         },
-        {
-          path: "my-apps",
-          component: () => import("../layouts/AIWorkspaceLayout.vue"),
-          meta: { requiresAuth: true },
-          children: [
-            {
-              path: "",
-              name: "MyApps",
-              component: () => import("../views/ai_workspace/MyAppsView.vue"),
-            },
-          ],
-        },
-        {
-          path: "history",
-          component: () => import("../layouts/AIWorkspaceLayout.vue"),
-          meta: { requiresAuth: true },
-          children: [
-            {
-              path: "",
-              name: "History",
-              component: () => import("../views/ai_workspace/HistoryView.vue"),
-            },
-          ],
-        },
+      
       ],
     },
   ],
