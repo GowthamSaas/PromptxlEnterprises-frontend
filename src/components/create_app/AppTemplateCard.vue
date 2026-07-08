@@ -21,7 +21,7 @@ const emit = defineEmits(['select'])
 
 <style scoped>
 .template-card {
-  height: 100%;
+ /* jnjkn */
 }
 
 .template-card.selected {

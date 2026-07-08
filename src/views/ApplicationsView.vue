@@ -268,7 +268,7 @@
   import InputSwitch from 'primevue/inputswitch'
   import Tag from 'primevue/tag'
   import IconField from 'primevue/iconfield'
-  import InputIcon from 'primevue/inputicon'
+  // import InputIcon from 'primevue/inputicon'
 
 
   const toast = useToast()
