@@ -1,75 +1,81 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
+import { createRouter, createWebHistory } from "vue-router";
+import { useAuthStore } from "../stores/auth";
+import SplashView from "../views/SplashView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: '/login',
-      name: 'Login',
-      component: () => import('../views/LoginView.vue'),
-      meta: { guest: true }
+      path: "/splash",
+      name: "Splash",
+      component: SplashView,
     },
     {
-      path: '/superadmin/login',
-      name: 'SuperAdminLogin',
-      component: () => import('../views/SuperAdminLoginView.vue'),
-      meta: { guest: true }
+      path: "/login",
+      name: "Login",
+      component: () => import("../views/LoginView.vue"),
+      meta: { guest: true },
     },
     {
-      path: '/superadmin',
-      component: () => import('../layouts/SuperAdminLayout.vue'),
-      meta: { requiresAuth: true, roles: ['superadmin'] },
+      path: "/superadmin/login",
+      name: "SuperAdminLogin",
+      component: () => import("../views/SuperAdminLoginView.vue"),
+      meta: { guest: true },
+    },
+    {
+      path: "/superadmin",
+      component: () => import("../layouts/SuperAdminLayout.vue"),
+      meta: { requiresAuth: true, roles: ["superadmin"] },
       children: [
         {
-          path: '',
-          name: 'SuperAdminDashboard',
-          component: () => import('../views/SuperAdminDashboardView.vue')
+          path: "",
+          name: "SuperAdminDashboard",
+          component: () => import("../views/SuperAdminDashboardView.vue"),
         },
         {
-          path: 'tenants',
-          name: 'SuperAdminTenants',
-          component: () => import('../views/SuperAdminTenantsView.vue')
+          path: "tenants",
+          name: "SuperAdminTenants",
+          component: () => import("../views/SuperAdminTenantsView.vue"),
         },
         {
-          path: 'tenants/create',
-          name: 'SuperAdminTenantCreate',
-          component: () => import('../views/SuperAdminTenantCreateView.vue')
-        }
-      ]
+          path: "tenants/create",
+          name: "SuperAdminTenantCreate",
+          component: () => import("../views/SuperAdminTenantCreateView.vue"),
+        },
+      ],
     },
     {
-      path: '/',
-      component: () => import('../layouts/DashboardLayout.vue'),
+      path: "/",
+      component: () => import("../layouts/DashboardLayout.vue"),
       meta: { requiresAuth: true },
       children: [
         {
-          path: '',
-          name: 'Dashboard',
-          component: () => import('../views/DashboardView.vue')
+          path: "",
+          name: "Dashboard",
+          component: () => import("../views/DashboardView.vue"),
         },
         {
-          path: 'profile',
-          name: 'Profile',
-          component: () => import('../views/ProfileView.vue')
+          path: "profile",
+          name: "Profile",
+          component: () => import("../views/ProfileView.vue"),
         },
         {
-          path: 'users',
-          name: 'Users',
-          component: () => import('../views/UsersView.vue'),
-          meta: { roles: ['owner', 'admin'] }
+          path: "users",
+          name: "Users",
+          component: () => import("../views/UsersView.vue"),
+          meta: { roles: ["owner", "admin"] },
         },
         {
-          path: 'admins',
-          name: 'Admins',
-          component: () => import('../views/AdminsView.vue'),
-          meta: { roles: ['owner'] }
+          path: "admins",
+          name: "Admins",
+          component: () => import("../views/AdminsView.vue"),
+          meta: { roles: ["owner"] },
         },
-         {
-          path: 'projects',
-          name: 'Projects',
-          component: () => import('../views/ProjectView.vue'),
-          meta: { roles: ['owner', 'admin'] }
+        {
+          path: "projects",
+          name: "Projects",
+          component: () => import("../views/ProjectView.vue"),
+          meta: { roles: ["owner", "admin"] },
         },
         {
           path: "project-assignments",
@@ -77,93 +83,97 @@ const router = createRouter({
           component: () => import("../views/ProjectAssignmentsView.vue"),
         },
         {
-          path: 'connectors',
-          component: () => import('../layouts/AIWorkspaceLayout.vue'),
+          path: "connectors",
+          component: () => import("../layouts/AIWorkspaceLayout.vue"),
           meta: { requiresAuth: true },
           children: [
             {
-              path: '',
-              name: 'Connectors',
-              component: () => import('../views/ai_workspace/ConnectorsView.vue')
-            }
-          ]
-        },
-        {
-          path: 'llm/providers',
-          component: () => import('../layouts/AIWorkspaceLayout.vue'),
-          meta: { requiresAuth: true },
-          children: [
-            {
-              path: '',
-              name: 'LLMProviders',
-              component: () => import('../views/ai_workspace/LLMProvidersView.vue')
-            }
-          ]
-        },
-        {
-          path: 'create-app',
-          component: () => import('../layouts/AIWorkspaceLayout.vue'),
-          meta: { requiresAuth: true },
-          children: [
-            {
-              path: 'createapp',
-              name: 'CreateApp',
-              component: () => import('../views/ai_workspace/AIWorkspaceView.vue')
+              path: "",
+              name: "Connectors",
+              component: () =>
+                import("../views/ai_workspace/ConnectorsView.vue"),
             },
-            
-            {
-              path: 'guide',
-              name: 'CreateAppGuide',
-              component: () => import('../views/ai_workspace/CreateAppGuideView.vue')
-            }
-          ]
+          ],
         },
         {
-          path: 'my-apps',
-          component: () => import('../layouts/AIWorkspaceLayout.vue'),
+          path: "llm/providers",
+          component: () => import("../layouts/AIWorkspaceLayout.vue"),
           meta: { requiresAuth: true },
           children: [
             {
-              path: '',
-              name: 'MyApps',
-              component: () => import('../views/ai_workspace/MyAppsView.vue')
-            }
-          ]
+              path: "",
+              name: "LLMProviders",
+              component: () =>
+                import("../views/ai_workspace/LLMProvidersView.vue"),
+            },
+          ],
         },
         {
-          path: 'history',
-          component: () => import('../layouts/AIWorkspaceLayout.vue'),
+          path: "create-app",
+          component: () => import("../layouts/AIWorkspaceLayout.vue"),
           meta: { requiresAuth: true },
           children: [
             {
-              path: '',
-              name: 'History',
-              component: () => import('../views/ai_workspace/HistoryView.vue')
-            }
-          ]
-        }
-      ]
-    }
-  ]
-})
+              path: "createapp",
+              name: "CreateApp",
+              component: () =>
+                import("../views/ai_workspace/AIWorkspaceView.vue"),
+            },
+
+            {
+              path: "guide",
+              name: "CreateAppGuide",
+              component: () =>
+                import("../views/ai_workspace/CreateAppGuideView.vue"),
+            },
+          ],
+        },
+        {
+          path: "my-apps",
+          component: () => import("../layouts/AIWorkspaceLayout.vue"),
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: "",
+              name: "MyApps",
+              component: () => import("../views/ai_workspace/MyAppsView.vue"),
+            },
+          ],
+        },
+        {
+          path: "history",
+          component: () => import("../layouts/AIWorkspaceLayout.vue"),
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: "",
+              name: "History",
+              component: () => import("../views/ai_workspace/HistoryView.vue"),
+            },
+          ],
+        },
+      ],
+    },
+  ],
+});
 
 // Navigation guard
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore()
-  
+  const authStore = useAuthStore();
+
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next(to.path.startsWith('/superadmin') ? '/superadmin/login' : '/login')
+    next(to.path.startsWith("/superadmin") ? "/superadmin/login" : "/login");
   } else if (to.meta.guest && authStore.isAuthenticated) {
-    if (to.path.startsWith('/superadmin') && authStore.isSuperAdmin) {
-      next('/superadmin')
+    if (to.path.startsWith("/superadmin") && authStore.isSuperAdmin) {
+      next("/superadmin");
     } else {
-      next('/')
+      next("/");
     }
   } else if (to.meta.roles && !to.meta.roles.includes(authStore.user?.role)) {
-    next('/')
+    next("/");
   } else {
-    next()
+    next();
   }
-})
+});
 
-export default router
+export default router;
