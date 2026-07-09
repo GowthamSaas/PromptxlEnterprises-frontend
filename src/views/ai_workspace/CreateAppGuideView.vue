@@ -6,61 +6,88 @@
         <p class="text-600 text-base">Follow these steps to connect services, add LLM providers, and scaffold your app.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
-        <Card
-          class="cursor-pointer"
-          @click="selectSection('connectors')"
-          :pt="{ 
-            root: { class: 'hover:shadow-2 transition-all duration-300' },
-            body: { class: 'p-3' },
-            content: { class: 'p-0' } 
-          }"
-        >
-          <template #content>
-            <div class="flex flex-column align-items-center justify-content-center gap-1 text-center">
-              <i class="pi pi-sitemap text-xl" style="color: #00b894;"></i>
-              <div class="text-900 font-semibold text-xs">Connector</div>
-              <div class="text-500 text-xs" style="font-size: 0.75rem;">Connect external services</div>
-            </div>
-          </template>
-        </Card>
+      <div class="grid">
+  <!-- Connector -->
+  <div class="col-12 md:col-4">
+    <Card
+      class="h-full cursor-pointer w-full"
+      @click="selectSection('connectors')"
+      :pt="{
+        root: { class: 'hover:shadow-2 transition-all duration-300 h-full' },
+        body: { class: 'p-3 h-full' },
+        content: { class: 'p-0 h-full' }
+      }"
+    >
+      <template #content>
+        <div class="flex flex-column align-items-center justify-content-center text-center gap-2 py-3">
+          <i class="pi pi-sitemap text-2xl text-green-500"></i>
 
-        <Card
-          class="cursor-pointer"
-          @click="selectSection('llm')"
-          :pt="{ 
-            root: { class: 'hover:shadow-2 transition-all duration-300' },
-            body: { class: 'p-3' },
-            content: { class: 'p-0' } 
-          }"
-        >
-          <template #content>
-            <div class="flex flex-column align-items-center justify-content-center gap-1 text-center">
-              <i class="pi pi-cog text-xl" style="color: #7c3aed;"></i>
-              <div class="text-900 font-semibold text-xs">LLM Provider</div>
-              <div class="text-500 text-xs" style="font-size: 0.75rem;">Add and manage LLM APIs</div>
-            </div>
-          </template>
-        </Card>
+          <div class="font-semibold text-900">
+            Connector
+          </div>
 
-        <Card
-          class="cursor-pointer"
-          @click="selectSection('createApp')"
-          :pt="{ 
-            root: { class: 'hover:shadow-2 transition-all duration-300' },
-            body: { class: 'p-3' },
-            content: { class: 'p-0' } 
-          }"
-        >
-          <template #content>
-            <div class="flex flex-column align-items-center justify-content-center gap-1 text-center">
-              <i class="pi pi-plus-circle text-xl" style="color: #0891b2;"></i>
-              <div class="text-900 font-semibold text-xs">Create App</div>
-              <div class="text-500 text-xs" style="font-size: 0.75rem;">Scaffold and generate your app</div>
-            </div>
-          </template>
-        </Card>
-      </div>
+          <div class="text-500 text-sm">
+            Connect external services
+          </div>
+        </div>
+      </template>
+    </Card>
+  </div>
+
+  <!-- LLM -->
+  <div class="col-12 md:col-4">
+    <Card
+      class="h-full cursor-pointer w-full"
+      @click="selectSection('llm')"
+      :pt="{
+        root: { class: 'hover:shadow-2 transition-all duration-300 h-full' },
+        body: { class: 'p-3 h-full' },
+        content: { class: 'p-0 h-full' }
+      }"
+    >
+      <template #content>
+        <div class="flex flex-column align-items-center justify-content-center text-center gap-2 py-3">
+          <i class="pi pi-cog text-2xl text-purple-500"></i>
+
+          <div class="font-semibold text-900">
+            LLM Provider
+          </div>
+
+          <div class="text-500 text-sm">
+            Add and manage LLM APIs
+          </div>
+        </div>
+      </template>
+    </Card>
+  </div>
+
+  <!-- Create App -->
+  <div class="col-12 md:col-4">
+    <Card
+      class="h-full cursor-pointer w-full"
+      @click="selectSection('createApp')"
+      :pt="{
+        root: { class: 'hover:shadow-2 transition-all duration-300 h-full' },
+        body: { class: 'p-3 h-full' },
+        content: { class: 'p-0 h-full' }
+      }"
+    >
+      <template #content>
+        <div class="flex flex-column align-items-center justify-content-center text-center gap-2 py-3">
+          <i class="pi pi-plus-circle text-2xl text-cyan-500"></i>
+
+          <div class="font-semibold text-900">
+            Create App
+          </div>
+
+          <div class="text-500 text-sm">
+            Scaffold and generate your app
+          </div>
+        </div>
+      </template>
+    </Card>
+  </div>
+</div>
 
       <Card class="mt-3" :pt="{ body: { class: 'p-0' }, content: { class: 'p-0' } }" :style="{ backgroundColor: '#f3effc' }">
         <template #content>
