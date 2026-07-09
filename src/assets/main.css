@@ -23,10 +23,17 @@ html, body {
 }
 
 /* Ensure images and SVGs scale to container */
-img, svg, video {
-  max-width: 100%;
-  height: auto;
-  display: block;
+img,
+video {
+    max-width:100%;
+    height:auto;
+    display:block;
+}
+
+svg:not(.p-icon) {
+    max-width:100%;
+    height:auto;
+    display:block;
 }
 
 /* ─────────────────────────────────────────────
