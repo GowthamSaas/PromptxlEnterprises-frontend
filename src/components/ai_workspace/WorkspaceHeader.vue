@@ -4,29 +4,31 @@
     <!-- Left -->
     <div class="header-left">
 
-      <div class="project-info">
+  <div class="project-info">
 
-        <h2 class="project-name">
-          {{ projectName }}
-        </h2>
+    <h2 class="project-name">
+      {{ projectName }}
+    </h2>
 
-        <div class="project-meta">
+    <div class="project-meta">
 
-          <Tag
-            :value="provider"
-            severity="info"
-          />
+      <Tag
+        icon="pi pi-server"
+        :value="provider"
+        severity="info"
+      />
 
-          <Tag
-            :value="model"
-            severity="contrast"
-          />
-
-        </div>
-
-      </div>
+      <Tag
+        icon="pi pi-microchip-ai"
+        :value="model"
+        severity="contrast"
+      />
 
     </div>
+
+  </div>
+
+</div>
 
     <!-- Right -->
 
@@ -65,11 +67,13 @@
 import { computed } from "vue";
 
 import { useProjectStore } from "../../stores/project";
+;
 
 import Button from "primevue/button";
 import Tag from "primevue/tag";
 
 const projectStore = useProjectStore();
+
 
 const projectName = computed(() => {
   return (
@@ -85,6 +89,9 @@ const provider = computed(() => {
   );
 });
 
+
+
+
 const model = computed(() => {
   return (
     projectStore.currentProject?.model ||
@@ -97,9 +104,9 @@ const model = computed(() => {
 
 .workspace-header{
 
-height:70px;
+height:90px;
 
-padding:0 24px;
+padding:16px 24px;
 
 display:flex;
 
@@ -113,23 +120,13 @@ border-bottom:1px solid var(--surface-border);
 
 }
 
-.header-left{
-
-display:flex;
-
-align-items:center;
-
-gap:16px;
-
-}
-
 .project-info{
 
 display:flex;
 
 flex-direction:column;
 
-gap:6px;
+gap:12px;
 
 }
 
@@ -137,17 +134,21 @@ gap:6px;
 
 margin:0;
 
-font-size:20px;
+font-size:22px;
 
-font-weight:600;
+font-weight:700;
 
 }
+
+
 
 .project-meta{
 
 display:flex;
 
 gap:10px;
+
+flex-wrap:wrap;
 
 }
 
@@ -158,6 +159,12 @@ display:flex;
 gap:12px;
 
 align-items:center;
+
+}
+
+.workspace-mode{
+
+margin-top:10px;
 
 }
 
