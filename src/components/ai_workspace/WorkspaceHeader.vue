@@ -2,17 +2,29 @@
   <header class="workspace-header">
     <!-- Left -->
     <div class="header-left">
+
       <div class="project-info">
+
         <h2 class="project-name">
           {{ projectName }}
         </h2>
 
         <div class="project-meta">
-          <Tag :value="provider" severity="info" />
 
-          <Tag :value="model" severity="contrast" />
+          <Tag
+            :value="provider"
+            severity="info"
+          />
+
+          <Tag
+            :value="model"
+            severity="contrast"
+          />
+
         </div>
+
       </div>
+
     </div>
 
     <!-- Right -->
@@ -49,6 +61,7 @@
 import { computed } from "vue";
 
 import { useProjectStore } from "../../stores/project";
+;
 
 import Button from "primevue/button";
 import Tag from "primevue/tag";
@@ -59,15 +72,6 @@ import Tag from "primevue/tag";
 
 const projectStore = useProjectStore();
 
-
-async function exportCurrentProject() {
-  if (!projectStore.currentProject) return;
-
-  await projectStore.exportProject(
-    projectStore.currentProject.id
-  );
-}
-
 const projectName = computed(() => {
   return projectStore.currentProject?.name || "Untitled Project";
 });
@@ -76,16 +80,21 @@ const provider = computed(() => {
   return projectStore.currentProject?.provider || "-";
 });
 
+
+
+
 const model = computed(() => {
   return projectStore.currentProject?.model || "-";
 });
 </script>
 
 <style scoped>
-.workspace-header {
-  height: 70px;
 
-  padding: 0 24px;
+.workspace-header{
+
+height:70px;
+
+padding:0 24px;
 
   display: flex;
 
@@ -95,15 +104,18 @@ const model = computed(() => {
 
   background: var(--surface-card);
 
-  border-bottom: 1px solid var(--surface-border);
+border-bottom:1px solid var(--surface-border);
+
 }
 
-.header-left {
-  display: flex;
+.header-left{
 
-  align-items: center;
+display:flex;
 
-  gap: 16px;
+align-items:center;
+
+gap:16px;
+
 }
 
 .project-info {
@@ -111,21 +123,26 @@ const model = computed(() => {
 
   flex-direction: column;
 
-  gap: 6px;
+gap:6px;
+
 }
 
 .project-name {
   margin: 0;
 
-  font-size: 20px;
+font-size:20px;
 
-  font-weight: 600;
+font-weight:600;
+
 }
+
+
 
 .project-meta {
   display: flex;
 
-  gap: 10px;
+gap:10px;
+
 }
 
 .header-right {
@@ -133,6 +150,8 @@ const model = computed(() => {
 
   gap: 12px;
 
-  align-items: center;
+align-items:center;
+
 }
+
 </style>

@@ -6,6 +6,7 @@ export const useLLMStore = defineStore('llm', () => {
   const providers = ref([])
   const models = ref([])
   const selectedProvider = ref(null)
+  const selectedModel = ref(null)
 
   const loading = ref(false)
   const error = ref(null)
@@ -88,6 +89,7 @@ export const useLLMStore = defineStore('llm', () => {
     providers,
     models,
     selectedProvider,
+    selectedModel,
     loading,
     error,
     fetchProviders,
