@@ -27,9 +27,9 @@ import AITopNavbar from '../components/common/AITopNavbar.vue'
   background: #f8fafc;
   /* border-bottom: 1px solid #e2e8f0; */
 }
-
+  
 .main-content {
   flex: 1;
-  padding: 24px 28px;
+  padding: 8px 28px 24px;
 }
 </style>

@@ -1,39 +1,35 @@
 <template>
   <header class="workspace-header">
-
     <!-- Left -->
     <div class="header-left">
 
-  <div class="project-info">
+      <div class="project-info">
 
-    <h2 class="project-name">
-      {{ projectName }}
-    </h2>
+        <h2 class="project-name">
+          {{ projectName }}
+        </h2>
 
-    <div class="project-meta">
+        <div class="project-meta">
 
-      <Tag
-        icon="pi pi-server"
-        :value="provider"
-        severity="info"
-      />
+          <Tag
+            :value="provider"
+            severity="info"
+          />
 
-      <Tag
-        icon="pi pi-microchip-ai"
-        :value="model"
-        severity="contrast"
-      />
+          <Tag
+            :value="model"
+            severity="contrast"
+          />
+
+        </div>
+
+      </div>
 
     </div>
-
-  </div>
-
-</div>
 
     <!-- Right -->
 
     <div class="header-right">
-
       <Button
         icon="pi pi-save"
         label="Save"
@@ -43,12 +39,12 @@
       />
 
       <Button
-        icon="pi pi-download"
-        label="Export"
-        severity="help"
-        outlined
-        disabled
-      />
+          icon="pi pi-download"
+          label="Export"
+          severity="contrast"
+          outlined
+           @click="exportCurrentProject"
+        />
 
       <Button
         icon="pi pi-history"
@@ -57,9 +53,7 @@
         outlined
         disabled
       />
-
     </div>
-
   </header>
 </template>
 
@@ -72,31 +66,25 @@ import { useProjectStore } from "../../stores/project";
 import Button from "primevue/button";
 import Tag from "primevue/tag";
 
+
+
+
+
 const projectStore = useProjectStore();
 
-
 const projectName = computed(() => {
-  return (
-    projectStore.currentProject?.name ||
-    "Untitled Project"
-  );
+  return projectStore.currentProject?.name || "Untitled Project";
 });
 
 const provider = computed(() => {
-  return (
-    projectStore.currentProject?.provider ||
-    "-"
-  );
+  return projectStore.currentProject?.provider || "-";
 });
 
 
 
 
 const model = computed(() => {
-  return (
-    projectStore.currentProject?.model ||
-    "-"
-  );
+  return projectStore.currentProject?.model || "-";
 });
 </script>
 
@@ -104,67 +92,65 @@ const model = computed(() => {
 
 .workspace-header{
 
-height:90px;
+height:70px;
 
-padding:16px 24px;
+padding:0 24px;
 
-display:flex;
+  display: flex;
 
-justify-content:space-between;
+  justify-content: space-between;
 
-align-items:center;
+  align-items: center;
 
-background:var(--surface-card);
+  background: var(--surface-card);
 
 border-bottom:1px solid var(--surface-border);
 
 }
 
-.project-info{
+.header-left{
 
 display:flex;
-
-flex-direction:column;
-
-gap:12px;
-
-}
-
-.project-name{
-
-margin:0;
-
-font-size:22px;
-
-font-weight:700;
-
-}
-
-
-
-.project-meta{
-
-display:flex;
-
-gap:10px;
-
-flex-wrap:wrap;
-
-}
-
-.header-right{
-
-display:flex;
-
-gap:12px;
 
 align-items:center;
 
+gap:16px;
+
 }
 
-.workspace-mode{
+.project-info {
+  display: flex;
 
-margin-top:10px;
+  flex-direction: column;
+
+gap:6px;
+
+}
+
+.project-name {
+  margin: 0;
+
+font-size:20px;
+
+font-weight:600;
+
+}
+
+
+
+.project-meta {
+  display: flex;
+
+gap:10px;
+
+}
+
+.header-right {
+  display: flex;
+
+  gap: 12px;
+
+align-items:center;
 
 }
 
